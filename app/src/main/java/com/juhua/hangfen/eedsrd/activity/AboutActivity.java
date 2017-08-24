@@ -71,7 +71,7 @@ public class AboutActivity extends Activity{
             PackageManager packageManager = this.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(
                     this.getPackageName(), 0);
-            appVersionStr = "鄂尔多斯人大履职服务平台 V " + packageInfo.versionName;
+            appVersionStr = getResources().getString(R.string.app_name) + "履职服务平台 V " + packageInfo.versionName;
             tvVersion.setText(appVersionStr);//当前App版本
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

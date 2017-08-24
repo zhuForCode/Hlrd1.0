@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">鄂尔多斯人大</string>
+    <string name="app_name">滨州人大</string>
     <string name="version_name">1.0.0</string>
     <string name="about_title">关于</string>
     <string name="sure">确定</string>
     <string name="cancel">取消</string>
-    <string name="v_1_0_0">鄂尔多斯人大履职服务平台 V 1.0.0</string>
+    <string name="v_1_0_0">滨州人大履职服务平台 V 1.0.0</string>
     <string name="jishuzhichi">浙江巨化信息技术杭州分公司技术支持</string>
     <string name="banbenshengji">版本升级</string>
     <string name="erweima">二维码</string>
@@ -17,9 +17,9 @@
     <string name="placeholder_enter_account">请输入账号</string>
     <string name="btn_remember_pwd">记住密码</string>
     <string name="btn_forget_pwd"><![CDATA[忘记密码>>]]></string>
-    <string name="qrcode_title_str">鄂尔多斯人大履职服务平台 V 1.0.0</string>
+    <string name="qrcode_title_str">滨州人大履职服务平台 V 1.0.0</string>
     <string name="saomaxiazai">扫描二维码下载人大履职平台</string>
-    <string name="share_app">鄂尔多斯人大履职平台安卓端下载地址：%s：</string>
+    <string name="share_app">滨州人大履职平台安卓端下载地址：%s：</string>
     <string name="app_slogan">为人民服务</string>
     <string name="setting_key_mobile_network_play">mobile_network_play</string>
     <string name="setting_key_mobile_network_download">mobile_network_download</string>

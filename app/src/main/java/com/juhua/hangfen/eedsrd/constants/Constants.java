@@ -35,10 +35,10 @@ public interface Constants {
     String PARAM_OLDAREA_ID = "oldareaid";
     String PARAM_QUERY = "title";//查询
 
-    String DOMAIN_NAME = "http://58.18.251.10:8083";
-    String WEBSERVICE_URL = "http://58.18.251.10:8083/WebServers/AppSer.asmx";
+    String DOMAIN_NAME = "http://202.96.113.83:808";
+    String WEBSERVICE_URL = " /WebServers/AppSer.asmx";
     String NAME_SPACE = "http://tempuri.org/";
-    String WSDL = "http://58.18.251.10:8083/WebServers/AppSer.asmx?WSDL";
+    String WSDL = "http://202.96.113.83:808/WebServers/AppSer.asmx?WSDL";
     String METHOD_APP_LOGIN = "AppLoginForZjrd";
     String METHOD_GET_APP_VERSION = "GetWebAppVersion";
     String METHOD_GET_BACK_PASSWORD = "GetBackPassWord";
