@@ -43,6 +43,7 @@ import com.juhua.hangfen.eedsrd.tools.CryptoTools;
 import com.juhua.hangfen.eedsrd.tools.DialogUtil;
 import com.juhua.hangfen.eedsrd.tools.JsonUtils;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
+import com.juhua.hangfen.eedsrd.webservice.SSLConnection;
 
 import org.json.JSONException;
 import java.util.HashMap;
@@ -97,6 +98,9 @@ public class LoginActivity extends Activity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                finish();
+                startActivity(intent);
                 if (validate()) {
                     if (appContext.isNetworkConnected(LoginActivity.this)){
                         if(Permission == 1){
@@ -109,7 +113,7 @@ public class LoginActivity extends Activity {
                             public void run() {
                                 if (Checking()) {
                                     remember();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     String[] propreties = {"USERID", "姓名", "帐号", "手机号码","固定电话","地区", "ACCESSTOKEN"};
                                     try {
                                       //  userID = jsonUtils.Analysis(jsonStr, propreties).get("USERID").toString();
@@ -136,9 +140,9 @@ public class LoginActivity extends Activity {
             }
         });
 
-        btnGetNewPwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+             btnGetNewPwd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                 final String mobile = edtUser.getText().toString();
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, AlertDialog.THEME_HOLO_LIGHT);
                 builder.setIcon(getResources().getDrawable(R.drawable.ic_lock_open_black));
@@ -327,7 +331,12 @@ public class LoginActivity extends Activity {
         }
     };
     protected void initData(){
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SSLConnection.httpGet();;
+            }
+        }).start();
     }
     // 对用户输入的用户名、密码进行校验
     private boolean validate() {
