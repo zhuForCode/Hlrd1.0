@@ -13,14 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".application.ThisApplication">
-        <activity android:name=".activity.WelcomeActivity" >
+        <activity android:name=".activity.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.HomeActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.AboutActivity" />
         <activity android:name=".activity.PublicWebViewActivity" />
