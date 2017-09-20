@@ -31,6 +31,7 @@
             android:hint="@string/placeholder_enter_account"
             android:singleLine="true"
             style="@style/editText"
+            android:imeOptions="actionNext"
             android:id="@+id/userName_editText" />
         <Button
             android:id="@+id/button_clear"
@@ -68,6 +69,7 @@
             android:inputType="textPassword"
             android:singleLine="true"
             android:hint="@string/placehholder_enter_pwd"
+            android:imeOptions="actionDone"
             android:id="@+id/passWord_editText" />
         <Button
             android:id="@+id/button_clear1"
