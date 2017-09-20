@@ -2,8 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <include layout="@layout/toolbar_layout"/>
     <com.bigkoo.convenientbanner.ConvenientBanner
         android:id="@+id/home_banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
+
+    <GridView
+        android:id="@+id/home_buttons_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:numColumns="4"
+        android:stretchMode="columnWidth">
+
+    </GridView>
 </LinearLayout>

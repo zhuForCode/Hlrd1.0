@@ -13,9 +13,15 @@ import java.util.prefs.Preferences;
  */
 
 public class ThisApplication extends Application {
+    private static Context context;
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
         AppCache.init(this);
+    }
+
+    public static Context getContext(){
+        return context;
     }
 }

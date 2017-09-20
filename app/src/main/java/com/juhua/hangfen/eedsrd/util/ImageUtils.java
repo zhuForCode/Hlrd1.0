@@ -14,9 +14,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
+
+import com.juhua.hangfen.eedsrd.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by JiaJin Kuai on 2017/2/20.
@@ -375,5 +382,72 @@ public class ImageUtils {
     public static Bitmap base64ToBitmap(String base64Data) {
         byte[] bytes = Base64.decode(base64Data, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    /**
+     * 获取网落图片资源
+     * @param url
+     * @return
+     */
+    public static Bitmap getHttpBitmap(String url){
+        URL myFileURL;
+        Bitmap bitmap=null;
+        try{
+            myFileURL = new URL(url);
+            //获得连接
+            HttpURLConnection conn=(HttpURLConnection)myFileURL.openConnection();
+            //设置超时时间为6000毫秒，conn.setConnectionTiem(0);表示没有时间限制
+            conn.setConnectTimeout(6000);
+            //连接设置获得数据流
+            conn.setDoInput(true);
+            //不使用缓存
+            conn.setUseCaches(false);
+            //这句可有可无，没有影响
+            //conn.connect();
+            //得到数据流
+            InputStream is = conn.getInputStream();
+            //解析得到图片
+            bitmap = BitmapFactory.decodeStream(is);
+            //关闭数据流
+            is.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return bitmap;
+
+    }
+
+
+    public static  int getResourceId(String imageName, Context context){
+        int imageResId;
+        Resources res = context.getResources();
+        final String packageName = context.getPackageName();
+        try {
+            imageResId = res.getIdentifier(imageName, "drawable", packageName);
+        }catch (Exception e){
+            imageResId = res.getIdentifier("app_icon", "drawable", packageName);
+        }
+
+        return imageResId;
+    }
+
+    /**
+     * 获取图片名称获取图片的资源id的方法
+     * @param imageName
+     * @return
+     */
+    public static int getResourceByReflect(String imageName){
+        Class<com.juhua.hangfen.eedsrd.R.drawable> drawable  =  R.drawable.class;
+        Field field = null;
+        int r_id;
+        try {
+            field = drawable.getField(imageName);
+            r_id = field.getInt(field.getName());
+        } catch (Exception e) {
+            r_id=R.drawable.app_icon;
+            Log.e("ERROR", "PICTURE NOT　FOUND！");
+        }
+        return r_id;
     }
 }

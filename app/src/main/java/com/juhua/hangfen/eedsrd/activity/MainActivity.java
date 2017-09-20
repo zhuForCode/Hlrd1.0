@@ -129,7 +129,7 @@ public class MainActivity extends Activity {
         webView.getSettings().setLoadWithOverviewMode ( true );
         webView.getSettings().setDefaultTextEncodingName("GBK");
         webView.setDownloadListener(new MyWebViewDownLoadListener());
-        webView.addJavascriptInterface(new MainToOther(), "MainToOther");
+        webView.addJavascriptInterface(new MAndroid(), "MAndroid");
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
@@ -332,12 +332,16 @@ public class MainActivity extends Activity {
     }
 
     public void loadURL(){
+        StringBuilder builder = new StringBuilder(Constants.DOMAIN_NAME);
         try {
             if(getIntent().getExtras().get("Token") == null){
                 webView.loadUrl("file:///android_asset/error.html");//加载错误页面
             }else{
-                firsturl = Constants.DOMAIN_NAME + "/ZjrdApp/main.aspx?token=" +   getIntent().getExtras().get("Token").toString();
-                webView.loadUrl(firsturl);
+                builder.append("ZjrdApp/main.aspx?token=");
+                builder.append(getIntent().getExtras().getString("Token"));
+                builder.append("&actionUrl=");
+                builder.append(getIntent().getExtras().getString("actionUrl"));
+                webView.loadUrl(builder.toString());
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -347,47 +351,10 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            Log.d("urlNow", webView.getUrl());
-            WebBackForwardList listBackForward = webView.copyBackForwardList();
-            for(int i = 0 ; i < listBackForward.getSize() ; i++) {
-                Log.d("list", listBackForward.getItemAtIndex(i).getUrl());
-            }
-            if(webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/gzxxs.html")
-                    || webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/yajys.html")
-                    || webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/dblzs.html")
-                    || webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/mymaillistB.html")
-                    || webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/wljls.html")){
-                webView.loadUrl(Constants.DOMAIN_NAME + "/ZjrdApp/main.aspx");
-             //   webView.clearHistory();
-              //  webView.goBackOrForward(listBackForward.getSize() - 2*listBackForward.getSize() + 1);
-            }else if(webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/wljltypemenu.html")){
-                webView.loadUrl(Constants.DOMAIN_NAME + "/ZjrdApp/wljls.html");
-             //   webView.clearHistory();
-            }else if (webView.getUrl().contains(Constants.DOMAIN_NAME + "/ZjrdApp/main.aspx")){
-              //  webView.goBack();// 返回前一个页面
-                if ((System.currentTimeMillis() - mExitTime) > 2000) {
-                    Object mHelperUtils;
-                    ToastUtils.show("再按一次退出程序");
-                  //  Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-                    mExitTime = System.currentTimeMillis();
-
-                } else {
-                    AppCache.clearStack();
-                }
-            }else {
-                webView.goBack();// 返回前一个页面
-            }
+            webView.goBack();// 返回前一个页面
             return true;
         }else{
-            if ((System.currentTimeMillis() - mExitTime) > 2000) {
-                Object mHelperUtils;
-              //  Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-                ToastUtils.show("再按一次退出程序");
-                mExitTime = System.currentTimeMillis();
-
-            } else {
-                AppCache.clearStack();
-            }
+            AppManager.getAppManager().finishActivity();//这边不能直接用finish()，出栈要清除栈的记录
             return true;
         }
      //   return super.onKeyDown(keyCode, event);
@@ -404,7 +371,7 @@ public class MainActivity extends Activity {
      cookieManager.setCookie(url, cookies);
         CookieSyncManager.getInstance().sync();
     }*/
-    public class MainToOther{
+    public class MAndroid{
         @JavascriptInterface
         public void toLogin(){//退回到登陆页面
             AppCache.clearStack();
@@ -436,6 +403,7 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(intent);
         }
+
         @JavascriptInterface//返回main.aspx,即结束指定数目的活动
         public void toMain(int count){
           //  AppManager.getAppManager().finishCountActivity(count);
@@ -451,7 +419,10 @@ public class MainActivity extends Activity {
             ToastUtils.show(tContent);
          //   toast.show();
         }
-
+        @JavascriptInterface
+        public void backToHome(){
+           AppManager.getAppManager().finishActivity();//这边不能直接用finish()，出栈要清除栈的记录
+        }
         @JavascriptInterface
         public void forDownloading(String urlD){
             imgurl = urlD;

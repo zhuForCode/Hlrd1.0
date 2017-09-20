@@ -32,6 +32,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.juhua.hangfen.eedsrd.R;
@@ -56,6 +57,8 @@ public class LoginActivity extends Activity {
     private Button btnClear;
     private Button btnClear1;
     private CheckBox ckBRem;
+    private TextView ckBTv;
+
     private Button btnLogin;
     private Button btnGetNewPwd;
     private ProgressDialog dialog;
@@ -98,9 +101,6 @@ public class LoginActivity extends Activity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                finish();
-                startActivity(intent);
                 if (validate()) {
                     if (appContext.isNetworkConnected(LoginActivity.this)){
                         if(Permission == 1){
@@ -116,9 +116,9 @@ public class LoginActivity extends Activity {
                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     String[] propreties = {"USERID", "姓名", "帐号", "手机号码","固定电话","地区", "ACCESSTOKEN"};
                                     try {
-                                      //  userID = jsonUtils.Analysis(jsonStr, propreties).get("USERID").toString();
-                                     //   UName =  jsonUtils.Analysis(jsonStr, propreties).get("姓名").toString();
-                                       Token = jsonUtils.Analysis(jsonStr, propreties).get("ACCESSTOKEN").toString();
+                                        //  userID = jsonUtils.Analysis(jsonStr, propreties).get("USERID").toString();
+                                        //   UName =  jsonUtils.Analysis(jsonStr, propreties).get("姓名").toString();
+                                        Token = jsonUtils.Analysis(jsonStr, propreties).get("ACCESSTOKEN").toString();
                                     } catch (JSONException e){
                                         e.printStackTrace();
                                     }
@@ -136,6 +136,7 @@ public class LoginActivity extends Activity {
                     }
 
                 }
+
 
             }
         });
@@ -220,6 +221,7 @@ public class LoginActivity extends Activity {
         edtUser = (EditText) findViewById(R.id.userName_editText);
         edtPw = (EditText) findViewById(R.id.passWord_editText);
         ckBRem = (CheckBox) findViewById(R.id.rem_checkBox);
+        ckBTv = (TextView) findViewById(R.id.textView);
         btnClear = (Button) findViewById(R.id.button_clear);
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,6 +292,13 @@ public class LoginActivity extends Activity {
                     // 此处为失去焦点时的处理内容
                     btnClear1.setVisibility(View.INVISIBLE);
                 }
+            }
+        });
+
+        ckBTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ckBRem.setChecked(!ckBRem.isChecked());
             }
         });
 

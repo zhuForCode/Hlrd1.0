@@ -3,6 +3,7 @@ package com.juhua.hangfen.eedsrd.util;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,5 +25,12 @@ public class GsonUtil {
         List<T> result = gson.fromJson(jsonData, new TypeToken<List<T>>() {
         }.getType());
         return result;
+    }
+
+    public static HashMap<String, Object> parseJsonObject(String jsonData){
+        Gson gson = new Gson();
+        HashMap<String, Object> result = gson.fromJson(jsonData, HashMap.class);
+        return result;
+
     }
 }

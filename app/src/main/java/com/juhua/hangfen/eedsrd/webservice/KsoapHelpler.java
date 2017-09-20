@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedHashTreeMap;
 import com.juhua.hangfen.eedsrd.constants.Constants;
+import com.juhua.hangfen.eedsrd.model.GetData;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -202,6 +203,9 @@ public class KsoapHelpler<T> {
         }
         return mGson.fromJson(jsonStr, mClass);
     }
+
+
+
     private String jsonString(String s){//过滤双引号为中文双引号
         char[] temp = s.toCharArray();
         String newJsonStr = "";

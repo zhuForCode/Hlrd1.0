@@ -69,7 +69,7 @@ public class NetworkImageHolderView implements Holder<LinkedTreeMap<String, Stri
         textView.setTextColor(Color.WHITE);
         textView.setTextSize(14);
         textView.setGravity(Gravity.BOTTOM);
-        textView.setPadding(30, 0, 0, 30);
+        textView.setPadding(30, 0, 0, 25);
         textView.setWidth(mRelativeLayout.getWidth());
         textView.setBackgroundResource(R.drawable.bg_gradient);
         mRelativeLayout.addView(textView ,layoutParams);
