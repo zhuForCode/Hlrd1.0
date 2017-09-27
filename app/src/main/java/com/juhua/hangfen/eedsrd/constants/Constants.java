@@ -13,10 +13,10 @@ public interface Constants {
     String VERIFY = "+afJ7yNqhDL67Hbo7ib9HQ==";
     int REQUEST_TIMEOUT = 8000;
 
-    String DOMAIN_NAME = "http://192.168.1.141/";
+    String DOMAIN_NAME = "http://58.18.251.10:8083/";
     String WEBSERVICE_URL = " /WebServers/AppSer.asmx";
     String NAME_SPACE = "http://tempuri.org/";
-    String WSDL = "http://192.168.1.141/WebServers/AppSer.asmx?WSDL";
+    String WSDL = "http://58.18.251.10:8083/WebServers/AppSer.asmx?WSDL";
     String METHOD_APP_LOGIN = "AppLoginForZjrd";
     String METHOD_GET_APP_VERSION = "GetWebAppVersion";
     String METHOD_GET_BACK_PASSWORD = "GetBackPassWord";

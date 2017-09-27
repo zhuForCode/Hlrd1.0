@@ -103,7 +103,7 @@ public class HomeActivity  extends BaseActivity{
 
     private  void getBannerData(){
         SoapHelper soapHelper = new SoapHelper()
-                .setWsdl("https://dblz.zjrd.gov.cn/WebServers/ZhrdSer.asmx?WSDL")
+                .setWsdl("http://58.18.251.10:8083/WebServers/AppSer.asmx?WSDL")
                 .methodName("GetLBTList")
                 .addParams("size", "5")
                 .addParams("verify", Constants.VERIFY);
@@ -126,12 +126,12 @@ public class HomeActivity  extends BaseActivity{
 
     private void getLocalButton(){
         buttonLists = new ArrayList<HomeButton>();
-        buttonLists.add(new HomeButton(0, "工作信息", "icon_m_job", "gzxxs.html"));
+  //      buttonLists.add(new HomeButton(0, "工作信息", "icon_m_job", "gzxxs.html"));
         buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "yajys.html"));
         buttonLists.add(new HomeButton(2, "代表履职", "icon_m_dblz", "dblzs.html"));
         buttonLists.add(new HomeButton(3, "网络交流", "icon_m_wljl", "wljls.html"));
         buttonLists.add(new HomeButton(4, "民情直通车", "icon_m_mqztc", "mqztcB.html"));
-        buttonLists.add(new HomeButton(5, "我的邮箱", "icon_m_mail", "mymailListB.html"));
+        buttonLists.add(new HomeButton(5, "短信平台", "icon_m_mail", "mymailListB.html"));
         buttonLists.add(new HomeButton(6, "我的平台", "icon_m_myplatform", "myplatformB.html"));
         buttonLists.add(new HomeButton(7, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));
 
