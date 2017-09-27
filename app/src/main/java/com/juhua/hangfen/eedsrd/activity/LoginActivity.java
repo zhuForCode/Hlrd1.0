@@ -27,6 +27,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -296,6 +297,7 @@ public class LoginActivity extends Activity {
                 }
             }
         });
+
 
         ckBTv.setOnClickListener(new View.OnClickListener() {
             @Override

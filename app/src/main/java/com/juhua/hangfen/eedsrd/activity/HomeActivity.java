@@ -135,7 +135,7 @@ public class HomeActivity  extends BaseActivity{
         buttonLists.add(new HomeButton(6, "我的平台", "icon_m_myplatform", "myplatformB.html"));
         buttonLists.add(new HomeButton(7, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));
 
-        toolbar.post(new Runnable() {
+        gridView.post(new Runnable() {
             @Override
             public void run() {
                 int cols = 3;
@@ -146,7 +146,7 @@ public class HomeActivity  extends BaseActivity{
                 float bannerHeight = (float) 200;
                 int bannerH = (int) ImageUtils.convertDpToPixel(bannerHeight, HomeActivity.this);
                 int gvHeight = ScreenUtils.Height - bannerH - ScreenUtils.getNavigationBarHeight() - toolbar.getHeight() - ScreenUtils.getStatusBarHeight();
-                int itemHeight = (int) Math.ceil(gvHeight/cols);
+                int itemHeight = (int) Math.ceil(gridView.getHeight()/cols);
                 homeButtonAdapter = new HomeButtonAdapter(HomeActivity.this, buttonLists, itemHeight);
                 gridView.setAdapter(homeButtonAdapter);
                 setGridView();
