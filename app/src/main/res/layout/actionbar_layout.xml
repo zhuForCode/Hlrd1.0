@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:id="@+id/mAction_bar"
+    android:orientation="horizontal"
+    android:background="@color/colorPrimary">
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="50dip"
+        android:id="@+id/back_button_rl"
+        android:layout_height="match_parent">
+        <ImageView
+            android:src="@drawable/ic_arrow_back"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="13dip"
+            android:layout_marginBottom="13dip"
+            android:layout_marginTop="13dip"
+            android:layout_marginRight="10dip"/>
+        <Button
+            android:background="@drawable/press"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/back_button"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="3dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:orientation="horizontal"
+        android:layout_height="match_parent">
+        <!--      <ImageView
+
+                  android:src="@drawable/im_icon_more"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="12dip"
+                  android:layout_marginBottom="10dip"
+                  android:layout_marginTop="10dip"
+                  android:layout_marginRight="8dip"/>
+              <Button
+                  android:background="@drawable/press"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:id="@+id/more_btn"/>       -->
+    </RelativeLayout>
+
+</LinearLayout>

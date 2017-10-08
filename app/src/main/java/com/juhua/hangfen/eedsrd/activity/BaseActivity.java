@@ -11,9 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.util.ScreenUtils;
 
 /**
@@ -21,14 +25,30 @@ import com.juhua.hangfen.eedsrd.util.ScreenUtils;
  */
 
 public class BaseActivity extends AppCompatActivity {
-    protected Toolbar toolbar;
-
+    protected Button backButton;
+    protected TextView titleTv;
+    protected View.OnClickListener backListener;
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        AppCache.addToStack(this);
+        AppManager.getAppManager().addActivity(this);
+        backListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppManager.getAppManager().finishActivity();
+            }
+        };
+    }
+
+    protected void  createControl(){
 
     }
+
+    protected void bindControl(){
+
+    }
+
+
 
     protected void onDestroy() {
         AppCache.removeFromStack(this);

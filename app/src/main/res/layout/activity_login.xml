@@ -12,10 +12,10 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_width="fill_parent"
-        android:layout_height="45dip"
+        android:layout_height="50dip"
         android:background="@drawable/layout_border"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="12dp"
         >
         <ImageView
@@ -31,6 +31,8 @@
             android:hint="@string/placeholder_enter_account"
             android:singleLine="true"
             style="@style/editText"
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@+id/passWord_editText"
             android:id="@+id/userName_editText" />
         <Button
             android:id="@+id/button_clear"
@@ -46,11 +48,11 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_width="fill_parent"
-        android:layout_height="45dip"
+        android:layout_height="50dip"
         android:background="@drawable/layout_border"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="5dip">
         <ImageView
             android:layout_width="25dip"
@@ -68,6 +70,7 @@
             android:inputType="textPassword"
             android:singleLine="true"
             android:hint="@string/placehholder_enter_pwd"
+            android:imeOptions="actionDone"
             android:id="@+id/passWord_editText" />
         <Button
             android:id="@+id/button_clear1"
@@ -79,10 +82,10 @@
     </LinearLayout>
     <Button
         android:id="@+id/sign_in_button"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/dfbutton_bg"
         android:textStyle="bold" />
@@ -91,10 +94,11 @@
         android:orientation="horizontal"
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp">
         <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/rem_checkBox"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginBottom="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -120,7 +124,7 @@
             android:textColor="@color/common_white"
 
             android:text="@string/btn_forget_pwd"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="30dp"
             android:layout_toRightOf="@id/rem_checkBox"
             style="@android:style/Widget.DeviceDefault.Button.Borderless" />
 

@@ -84,9 +84,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        AppCache.removeFromStack(this);
-        super.onDestroy();
         Log.i("kjj", "onDestroy:" + getClass().getSimpleName());
+        super.onDestroy();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState){

@@ -11,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
@@ -30,6 +33,7 @@ import com.juhua.hangfen.eedsrd.constants.Constants;
 import com.juhua.hangfen.eedsrd.model.BannerPicture;
 import com.juhua.hangfen.eedsrd.model.GetData;
 import com.juhua.hangfen.eedsrd.model.HomeButton;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.util.AsyncUtil;
 import com.juhua.hangfen.eedsrd.util.GsonUtil;
 import com.juhua.hangfen.eedsrd.util.ImageUtils;
@@ -58,6 +62,7 @@ import java.util.List;
  */
 
 public class HomeActivity  extends BaseActivity{
+    protected RelativeLayout backButtonRl;
     private ConvenientBanner homeBanner;
     private List<BannerPicture> bannerLists;
     private List<HomeButton> buttonLists;
@@ -72,17 +77,22 @@ public class HomeActivity  extends BaseActivity{
         createControl();
         bindControl();
     }
+
     protected void createControl(){
+        titleTv = (TextView) findViewById(R.id.title_tv);
+        backButton = (Button)findViewById(R.id.back_button);
+        backButtonRl = (RelativeLayout)findViewById(R.id.back_button_rl);
+
         homeBanner = (ConvenientBanner) findViewById(R.id.home_banner);
         gridView = (GridView) findViewById(R.id.home_buttons_grid);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(this.getResources().getString(R.string.app_name) + "代表履职平台");
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
     }
+
     protected  void bindControl(){
-        initImageLoader();
+        backButtonRl.setVisibility(View.INVISIBLE);
+        titleTv.setText(this.getResources().getString(R.string.home_title));
         token = getIntent().getExtras().getString("Token");
+
+        initImageLoader();
         getLocalButton();
         getBannerData();
    //     getButtonData();
@@ -103,7 +113,7 @@ public class HomeActivity  extends BaseActivity{
 
     private  void getBannerData(){
         SoapHelper soapHelper = new SoapHelper()
-                .setWsdl("http://58.18.251.10:8083/WebServers/AppSer.asmx?WSDL")
+                .setWsdl("https://dblz.zjrd.gov.cn/WebServers/ZhrdSer.asmx?WSDL")
                 .methodName("GetLBTList")
                 .addParams("size", "5")
                 .addParams("verify", Constants.VERIFY);
@@ -126,32 +136,30 @@ public class HomeActivity  extends BaseActivity{
 
     private void getLocalButton(){
         buttonLists = new ArrayList<HomeButton>();
-  //      buttonLists.add(new HomeButton(0, "工作信息", "icon_m_job", "gzxxs.html"));
+        buttonLists.add(new HomeButton(0, "代表履职", "icon_m_job", "Duty/DutyMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "yajys.html"));
-        buttonLists.add(new HomeButton(2, "代表履职", "icon_m_dblz", "dblzs.html"));
-        buttonLists.add(new HomeButton(3, "网络交流", "icon_m_wljl", "wljls.html"));
-        buttonLists.add(new HomeButton(4, "民情直通车", "icon_m_mqztc", "mqztcB.html"));
-        buttonLists.add(new HomeButton(5, "短信平台", "icon_m_mail", "mymailListB.html"));
-        buttonLists.add(new HomeButton(6, "我的平台", "icon_m_myplatform", "myplatformB.html"));
-        buttonLists.add(new HomeButton(7, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));
+        buttonLists.add(new HomeButton(2, "代表之家", "icon_m_mqztc", "mymailListB.html"));
+        buttonLists.add(new HomeButton(3, "人事任免", "ic_home_default", "People/ArticleList.aspx?SortId=70&nav=show"));
+        buttonLists.add(new HomeButton(4, "履职参阅", "icon_m_zlk", "Duty/ConsultSort.aspx?nav=show"));
+        buttonLists.add(new HomeButton(5, "交流互动", "icon_m_wljl", "People/Database.aspx?nav=show"));
+        buttonLists.add(new HomeButton(6, "短信平台", "icon_m_mail", "Mailbox/MailList.aspx?nav=hide"));
+        buttonLists.add(new HomeButton(7, "代表数据库", "icon_m_myplatform", "People/Database.aspx?nav=show"));
+        buttonLists.add(new HomeButton(8, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));
 
-        toolbar.post(new Runnable() {
-            @Override
-            public void run() {
-                int cols = 3;
-                if(buttonLists.size() > 9){
-                    cols = 4;
-                }
-                gridView.setNumColumns(cols);
-                float bannerHeight = (float) 200;
-                int bannerH = (int) ImageUtils.convertDpToPixel(bannerHeight, HomeActivity.this);
-                int gvHeight = ScreenUtils.Height - bannerH - ScreenUtils.getNavigationBarHeight() - toolbar.getHeight() - ScreenUtils.getStatusBarHeight();
-                int itemHeight = (int) Math.ceil(gvHeight/cols);
-                homeButtonAdapter = new HomeButtonAdapter(HomeActivity.this, buttonLists, itemHeight);
-                gridView.setAdapter(homeButtonAdapter);
-                setGridView();
-            }
-        });
+        int cols = 3;
+        if(buttonLists.size() > 9){
+            cols = 4;
+        }
+        gridView.setNumColumns(cols);
+        float bannerHeight = (float) 200;
+        float actionbarHeight = (float) 48;
+        int bannerH = (int) ImageUtils.convertDpToPixel(bannerHeight, HomeActivity.this);
+        int actionbarH =  (int) ImageUtils.convertDpToPixel(actionbarHeight, HomeActivity.this);
+        int gvHeight = ScreenUtils.Height - bannerH - ScreenUtils.getNavigationBarHeight() - actionbarH - ScreenUtils.getStatusBarHeight();
+        int itemHeight = (int) Math.ceil(gvHeight/cols);
+        homeButtonAdapter = new HomeButtonAdapter(HomeActivity.this, buttonLists, itemHeight);
+        gridView.setAdapter(homeButtonAdapter);
+        setGridView();
 
     }
 
@@ -222,14 +230,22 @@ public class HomeActivity  extends BaseActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i){
-                    case 8:
+                    case 9:
                         ToastUtils.show(buttonLists.get(i).getName());
                         break;
                     default:
-                        Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-                        intent.putExtra("Token", token);
-                        intent.putExtra("actionUrl", buttonLists.get(i).getActionUrl());
-                        startActivity(intent);
+                        if(buttonLists.get(i).getActionUrl().contains("nav=")){
+                            Intent intent = new Intent(HomeActivity.this, WebActivity.class);
+                            intent.putExtra("Token", token);
+                            intent.putExtra("actionUrl", buttonLists.get(i).getActionUrl());
+                            intent.putExtra("actionName", buttonLists.get(i).getName());
+                            startActivity(intent);
+                        }else{
+                            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                            intent.putExtra("Token", token);
+                            intent.putExtra("actionUrl", buttonLists.get(i).getActionUrl());
+                            startActivity(intent);
+                        }
                         break;
                 }
             }
@@ -264,7 +280,7 @@ public class HomeActivity  extends BaseActivity{
                 ToastUtils.show("再按一次退出程序");
                 mExitTime = System.currentTimeMillis();
             } else {
-                AppCache.clearStack();
+                AppManager.getAppManager().finishAllActivity();
             }
         }
         return true;

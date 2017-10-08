@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 
 /**
  * Created by JiaJin Kuai on 2017/2/19.
@@ -27,7 +28,7 @@ public class QRCodeActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCache.addToStack(this);
+        AppManager.getAppManager().addActivity(this);
         setContentView(R.layout.activity_qrcode);
         init();
         initData();
