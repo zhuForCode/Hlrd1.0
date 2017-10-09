@@ -3,6 +3,7 @@ package com.juhua.hangfen.eedsrd.activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
@@ -28,6 +31,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,12 +41,16 @@ import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.constants.Constants;
 import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.tools.FileUtils;
+import com.juhua.hangfen.eedsrd.util.GsonUtil;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
-import com.juhua.hangfen.eedsrd.widget.MAndroid;
 
 import org.apache.http.HttpStatus;
 
 import java.io.File;
+import java.net.URLEncoder;
+import java.util.HashMap;
+
+import static com.juhua.hangfen.eedsrd.constants.Constants.RESULT_CONTACT_CONFIRM;
 
 /**
  * Created by congj on 2017/9/28.
@@ -50,13 +58,19 @@ import java.io.File;
 
 public class WebActivity extends BaseActivity {
     protected WebView webView;
+    private ProgressDialog mLoading;
     protected LinearLayout actionbarLL;
+    protected RelativeLayout rightBtnRL;
+    protected Button rightBtn;//actionbar 右键
+    protected int btnCode = 0;//根据webview url传来的code值确定actionbar右键的文字属性
+    protected ImageView rightBtnImageView;
     protected View.OnClickListener historyPageListener;
 
     private ValueCallback<Uri> mUploadMessageSingle;
     private ValueCallback<Uri[]> mUploadMessage;
     private final static int FILECHOOSER_RESULTCODE=1;
 
+    public final Handler mHandler = new Handler();
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -80,6 +94,9 @@ public class WebActivity extends BaseActivity {
         titleTv = (TextView) findViewById(R.id.title_tv);
         backButton = (Button)findViewById(R.id.back_button);
         actionbarLL = (LinearLayout)findViewById(R.id.mAction_bar);
+        rightBtnRL = (RelativeLayout)findViewById(R.id.right_btn_RL);
+        rightBtn = (Button) findViewById(R.id.right_btn);
+        rightBtnImageView = (ImageView)findViewById(R.id.right_btn_image);
 
         webView = (WebView) findViewById(R.id.web);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -114,6 +131,7 @@ public class WebActivity extends BaseActivity {
                 if(url.contains("nav=hide")){
                     actionbarLL.setVisibility(View.GONE);
                 }
+
                 String formData = getIntent().getStringExtra("FormData");
                 if(formData != null){
                     webView.loadUrl("javascript: prepareData('" + formData + "');");
@@ -369,6 +387,144 @@ public class WebActivity extends BaseActivity {
             default:
                 break;
         }
+    }
+
+
+    public  class MAndroid{
+
+        @JavascriptInterface
+        public void toLogin(){//退回到登陆页面
+            AppCache.clearStack();
+            Intent intent = new Intent(AppCache.getContext(), LoginActivity.class);
+            startActivity(intent);
+
+        }
+        @JavascriptInterface
+        public void tokenOut(){//退回到登陆页面
+            AlertDialog.Builder builder = new AlertDialog.Builder(AppCache.getContext());
+            builder.setIcon(getResources().getDrawable(R.drawable.ic_error_outline_black));
+            builder.setTitle("用户信息已过期！");
+            builder.setMessage("请重新登陆！可能的原因：\n1.用户半小时内无有效操作\n2.账号在其他手机上被登陆\n3.服务器升级维护");
+            builder.setCancelable(false);
+            builder.setPositiveButton("重新登陆", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AppCache.clearStack();
+                    Intent intent = new Intent(WebActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+            builder.create().show();
+        }
+        @JavascriptInterface
+        public void toAbout(){//前往关于界面
+            Intent intent = new Intent(WebActivity.this, AboutActivity.class);
+            startActivity(intent);
+        }
+
+        @JavascriptInterface//返回main.aspx,即结束指定数目的活动
+        public void toMain(int count){
+             AppManager.getAppManager().finishCountActivity(count);
+        }
+        @JavascriptInterface//返回上一页（活动）
+        public void toLast(){
+            AppManager.getAppManager().finishActivity();//这边不能直接用finish()，出栈要清除栈的记录
+        }
+
+        @JavascriptInterface
+        public void backToHome(){
+            AppManager.getAppManager().finishActivity();//这边不能直接用finish()，出栈要清除栈的记录
+        }
+
+        @JavascriptInterface
+        public  void newWeb(String url){
+            if(url.contains("nav=new")){
+                Intent intent = new Intent(AppCache.getContext(), WebActivity.class);
+                String u = url.split("LzptApp/")[1];
+                try {
+                    intent.putExtra("actionUrl", URLEncoder.encode(u, "utf-8"));
+                }catch (Exception e){
+                    intent.putExtra("actionUrl", u);
+                }
+
+                intent.putExtra("Token", getIntent().getExtras().getString("Token"));
+                AppCache.getContext().startActivity(intent);
+            }
+
+        }
+
+        @JavascriptInterface
+        public void newResponseWeb(String url, String formData, int responseCode){
+            if(url.contains("nav=new")){
+                Intent intent = new Intent(WebActivity.this, WebActivity.class);
+                String u = url.split("LzptApp/")[1];
+                try {
+                    intent.putExtra("actionUrl", URLEncoder.encode(u, "utf-8"));
+                }catch (Exception e){
+                    intent.putExtra("actionUrl", u);
+                }
+                intent.putExtra("FormData", formData);
+                intent.putExtra("Token", getIntent().getExtras().getString("Token"));
+                startActivityForResult(intent, responseCode);
+            }
+        }
+
+        @JavascriptInterface
+        public void setContact(String contact){
+            Intent intent  = new Intent();
+            intent.putExtra("contact", contact);
+            setResult(RESULT_CONTACT_CONFIRM, intent);
+            AppManager.getAppManager().finishActivity();
+        }
+
+
+        @JavascriptInterface
+        public void setRightButton(String jsonData){
+            final HashMap<String, Object> paramsMap = GsonUtil.parseJsonObject(jsonData);
+            Runnable runnableUI = new Runnable() {
+                @Override
+                public void run() {
+                    if(paramsMap.containsKey("visible")){
+                        if((boolean)paramsMap.get("visible")){
+                            rightBtnRL.setVisibility(View.VISIBLE);
+                        }else{
+                            rightBtnRL.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    if(paramsMap.containsKey("disabled")){
+                        rightBtn.setEnabled((boolean)paramsMap.get("disabled"));
+                    }
+                    if(paramsMap.containsKey("text")){
+                        rightBtn.setText((String)paramsMap.get("text"));
+                    }
+
+                    rightBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            webView.loadUrl("javascript: rightButtonEvent();");
+                        }
+                    });
+
+                }
+            };
+            mHandler.post(runnableUI);
+        }
+
+        @JavascriptInterface
+        public void addLoading(String message){
+            mLoading = ProgressDialog.show(WebActivity.this, "", message);
+        }
+
+        @JavascriptInterface
+        public void removeLoading(){
+            mLoading.dismiss();
+        }
+
+        @JavascriptInterface
+        public void showToast(String message){
+            ToastUtils.show(message);
+        }
+
     }
 
 }

@@ -42,21 +42,26 @@
     <RelativeLayout
         android:layout_width="50dp"
         android:orientation="horizontal"
+        android:id="@+id/right_btn_RL"
+        android:visibility="invisible"
         android:layout_height="match_parent">
-        <!--      <ImageView
-
-                  android:src="@drawable/im_icon_more"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginLeft="12dip"
-                  android:layout_marginBottom="10dip"
-                  android:layout_marginTop="10dip"
-                  android:layout_marginRight="8dip"/>
-              <Button
-                  android:background="@drawable/press"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:id="@+id/more_btn"/>       -->
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/right_btn_image"
+            android:src="@drawable/im_icon_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dip"
+            android:layout_marginBottom="10dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginRight="8dip"/>
+        <Button
+            android:background="@drawable/press"
+            android:layout_width="match_parent"
+            android:text="确定"
+            android:textColor="@color/common_white"
+            android:layout_height="match_parent"
+            android:id="@+id/right_btn"/>
     </RelativeLayout>
 
 </LinearLayout>
