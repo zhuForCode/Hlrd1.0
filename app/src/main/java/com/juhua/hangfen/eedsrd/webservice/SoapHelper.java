@@ -100,7 +100,7 @@ public class SoapHelper {
             request.addProperty(key, this.params.get(key));
         }
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-                SoapEnvelope.VER10);
+                SoapEnvelope.VER11);
         envelope.dotNet = true;
         envelope.setOutputSoapObject(request);
         HttpTransportSE ht = new HttpTransportSE(this.wsdl, Constants.REQUEST_TIMEOUT);

@@ -11,10 +11,10 @@
         android:textAlignment="center"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:paddingRight="18dp"
-        android:paddingTop="18dp"
+        android:paddingRight="28dp"
+        android:paddingTop="28dp"
         android:paddingBottom="10dp"
-        android:paddingLeft="18dp"
+        android:paddingLeft="28dp"
         android:id="@+id/home_grid_image" />
     <TextView
         android:layout_width="match_parent"

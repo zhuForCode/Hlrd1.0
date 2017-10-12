@@ -35,6 +35,7 @@
         android:layout_marginRight="3dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:background="@drawable/press"
         android:textColor="#ffffff"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -58,7 +59,6 @@
         <Button
             android:background="@drawable/press"
             android:layout_width="match_parent"
-            android:text="确定"
             android:textColor="@color/common_white"
             android:layout_height="match_parent"
             android:id="@+id/right_btn"/>

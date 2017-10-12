@@ -137,15 +137,14 @@ public class HomeActivity  extends BaseActivity{
     private void getLocalButton(){
         buttonLists = new ArrayList<HomeButton>();
         buttonLists.add(new HomeButton(0, "代表履职", "icon_m_job", "Duty/DutyMenu.aspx?nav=show"));
-        buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "yajys.html"));
+        buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "Proposal/ProposalMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(2, "代表之家", "icon_m_mqztc", "mymailListB.html"));
         buttonLists.add(new HomeButton(3, "人事任免", "ic_home_default", "People/ArticleList.aspx?SortId=70&nav=show"));
         buttonLists.add(new HomeButton(4, "履职参阅", "icon_m_zlk", "Duty/ConsultSort.aspx?nav=show"));
-        buttonLists.add(new HomeButton(5, "交流互动", "icon_m_wljl", "People/Database.aspx?nav=show"));
-        buttonLists.add(new HomeButton(6, "短信平台", "icon_m_mail", "Mailbox/MailList.aspx?nav=hide"));
+        buttonLists.add(new HomeButton(5, "交流互动", "icon_m_wljl", "Post/PostMenu.aspx?nav=show"));
+        buttonLists.add(new HomeButton(6, "短信平台", "icon_m_mail", "Mailbox/MailList.aspx?nav=show"));
         buttonLists.add(new HomeButton(7, "代表数据库", "icon_m_myplatform", "People/Database.aspx?nav=show"));
         buttonLists.add(new HomeButton(8, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));
-
         int cols = 3;
         if(buttonLists.size() > 9){
             cols = 4;

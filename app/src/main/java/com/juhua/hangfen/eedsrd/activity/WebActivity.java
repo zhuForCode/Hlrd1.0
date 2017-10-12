@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -39,12 +40,15 @@ import android.widget.TextView;
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.constants.Constants;
+import com.juhua.hangfen.eedsrd.model.Nav;
 import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.tools.FileUtils;
+import com.juhua.hangfen.eedsrd.tools.NetUtil;
 import com.juhua.hangfen.eedsrd.util.GsonUtil;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
 
 import org.apache.http.HttpStatus;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -477,33 +481,148 @@ public class WebActivity extends BaseActivity {
             AppManager.getAppManager().finishActivity();
         }
 
+        @JavascriptInterface
+        public void setNav(String jsonData){
+            final Nav nav = GsonUtil.parseJsonWithGson(jsonData, Nav.class);
+            Runnable runnableUI = new Runnable() {
+                @Override
+                public void run() {
+                    if(nav.getPosition() == null){
+                        return;
+                    }
+                    if (nav.getClick() != null) {
+                        View.OnClickListener clickListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                webView.loadUrl("javascript: " + nav.getClick() + "();");
+                            }
+                        };
+                        if (nav.getPosition().equals("left"))
+                            backButton.setOnClickListener(clickListener);
+                        if (nav.getPosition().equals("center"))
+                            titleTv.setOnClickListener(clickListener);
+                        if (nav.getPosition().equals("right"))
+                            rightBtn.setOnClickListener(clickListener);
+                    }
+
+                    if(nav.getText() != null && nav.getIcon() != null){
+                        if (nav.getPosition().equals("center")) {
+                            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iconfont.ttf");
+                            String text = nav.getText() + " " + nav.getIcon();
+                            titleTv.setTypeface(typeface);
+                            titleTv.setText(text);
+                        }
+
+                        if (nav.getPosition().equals("right")) {
+                            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iconfont.ttf");
+                            String text = nav.getIcon() + nav.getText();
+                            rightBtn.setTypeface(typeface);
+                            rightBtn.setText(text);
+                        }
+                    }
+
+                    if(nav.getText() != null && nav.getIcon() == null){
+                        if (nav.getPosition().equals("center")) {
+                            titleTv.setText(nav.getText());
+                        }
+
+                        if (nav.getPosition().equals("right")) {
+                            rightBtn.setText(nav.getText());
+                        }
+                    }
+
+                    if(nav.getText() == null && nav.getIcon() != null){
+                        if (nav.getPosition().equals("center")) {
+                            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iconfont.ttf");
+                            String text = nav.getIcon();
+                            titleTv.setTypeface(typeface);
+                            titleTv.setText(text);
+                        }
+
+                        if (nav.getPosition().equals("right")) {
+                            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iconfont.ttf");
+                            String text = nav.getIcon();
+                            rightBtn.setTypeface(typeface, Typeface.BOLD);
+                            rightBtn.setText(text);
+                            rightBtn.setTextSize(18);
+                        }
+                    }
+
+                    if (nav.getVisible() != null && nav.getVisible()) {
+                        rightBtnRL.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            };
+            mHandler.post(runnableUI);
+
+
+        }
+
 
         @JavascriptInterface
-        public void setRightButton(String jsonData){
+        public void setNav1(String jsonData){
             final HashMap<String, Object> paramsMap = GsonUtil.parseJsonObject(jsonData);
             Runnable runnableUI = new Runnable() {
                 @Override
                 public void run() {
-                    if(paramsMap.containsKey("visible")){
-                        if((boolean)paramsMap.get("visible")){
-                            rightBtnRL.setVisibility(View.VISIBLE);
-                        }else{
-                            rightBtnRL.setVisibility(View.INVISIBLE);
+                    if(paramsMap.containsKey("Left")){
+                        HashMap<String, Object> map = (HashMap<String, Object>) paramsMap.get("Left");
+                        if(map.containsKey("Click")) {
+                            backButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    webView.loadUrl("javascript: navLeftClick();");
+                                }
+                            });
                         }
                     }
-                    if(paramsMap.containsKey("disabled")){
-                        rightBtn.setEnabled((boolean)paramsMap.get("disabled"));
-                    }
-                    if(paramsMap.containsKey("text")){
-                        rightBtn.setText((String)paramsMap.get("text"));
-                    }
+                    if(paramsMap.containsKey("Center")){
+                        if(paramsMap.containsKey("disabled")){
+                            rightBtn.setEnabled((boolean)paramsMap.get("disabled"));
+                        }
+                        if(paramsMap.containsKey("text")){
 
-                    rightBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            webView.loadUrl("javascript: rightButtonEvent();");
+                            if(paramsMap.containsKey("icon")){
+                                Typeface typeface=Typeface.createFromAsset(getAssets(),  "fonts/iconfont.ttf");
+                                String text = (String)paramsMap.get("text") + " " + (String)paramsMap.get("icon");
+                                titleTv.setTypeface(typeface);
+                                titleTv.setText(text);
+                            }else{
+                                titleTv.setText((String)paramsMap.get("text"));
+                            }
                         }
-                    });
+
+                        titleTv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                webView.loadUrl("javascript: navCenterClick();");
+                            }
+                        });
+                    }
+                    if(paramsMap.containsKey("Right")){
+
+                        if(paramsMap.containsKey("visible")){
+                            if((boolean)paramsMap.get("visible")){
+                                rightBtnRL.setVisibility(View.VISIBLE);
+                            }else{
+                                rightBtnRL.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                        if(paramsMap.containsKey("disabled")){
+                            rightBtn.setEnabled((boolean)paramsMap.get("disabled"));
+                        }
+                        if(paramsMap.containsKey("text")){
+                            rightBtn.setText((String)paramsMap.get("text"));
+                        }
+
+                        rightBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                webView.loadUrl("javascript: navRightClick();");
+                            }
+                        });
+                    }
 
                 }
             };
