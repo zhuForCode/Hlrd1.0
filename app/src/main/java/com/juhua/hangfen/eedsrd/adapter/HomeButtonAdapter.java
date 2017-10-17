@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.model.HomeButton;
+import com.juhua.hangfen.eedsrd.widget.MaterialBadgeTextView;
 
 import java.util.List;
 
@@ -19,7 +20,6 @@ import java.util.List;
  */
 
 public class HomeButtonAdapter extends BaseAdapter {
-
     private Context mContext;
     private LayoutInflater layoutInflater;
     private List<HomeButton> homeButtons;

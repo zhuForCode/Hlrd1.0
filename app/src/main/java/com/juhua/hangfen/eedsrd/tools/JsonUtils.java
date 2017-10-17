@@ -106,7 +106,7 @@ public class JsonUtils {
         }
         return map;
     }
-    public String jsonString(String s){//过滤双引号为中文双引号
+    public static String jsonString(String s){//过滤双引号为中文双引号
         char[] temp = s.toCharArray();
         int n = temp.length;
         for(int i =0;i<n;i++){

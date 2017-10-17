@@ -25,8 +25,9 @@ import java.util.regex.Pattern;
 public class SoapHelper {
     private LinkedHashMap<String, String> params;
     private String method;
+    private int timeout = Constants.REQUEST_TIMEOUT;
     private GetData<String> result;
-    private String wsdl = Constants.WSDL;;
+    private String wsdl = Constants.WSDL;
 
     public  SoapHelper(){
         this.setResult(new GetData<String>());
@@ -51,6 +52,10 @@ public class SoapHelper {
 
     public SoapHelper setWsdl(String wsdl){
         this.wsdl = wsdl;
+        return this;
+    }
+    public SoapHelper setTimeout(int timeLength ){
+        this.timeout = timeLength;
         return this;
     }
 
@@ -103,7 +108,7 @@ public class SoapHelper {
                 SoapEnvelope.VER11);
         envelope.dotNet = true;
         envelope.setOutputSoapObject(request);
-        HttpTransportSE ht = new HttpTransportSE(this.wsdl, Constants.REQUEST_TIMEOUT);
+        HttpTransportSE ht = new HttpTransportSE(this.wsdl, this.timeout);
         try {
             ht.call(Constants.NAME_SPACE+this.getMethod(), envelope);
             SoapPrimitive object = (SoapPrimitive) envelope.getResponse();

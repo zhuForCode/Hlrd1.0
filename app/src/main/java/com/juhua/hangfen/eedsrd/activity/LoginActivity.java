@@ -36,6 +36,8 @@ import android.widget.TextView;
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.constants.Constants;
+import com.juhua.hangfen.eedsrd.model.GetData;
+import com.juhua.hangfen.eedsrd.model.JsonMessage;
 import com.juhua.hangfen.eedsrd.model.UpdateInfo;
 import com.juhua.hangfen.eedsrd.model.User;
 import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
@@ -43,11 +45,18 @@ import com.juhua.hangfen.eedsrd.tools.AppContext;
 import com.juhua.hangfen.eedsrd.tools.CryptoTools;
 import com.juhua.hangfen.eedsrd.tools.DialogUtil;
 import com.juhua.hangfen.eedsrd.tools.JsonUtils;
+import com.juhua.hangfen.eedsrd.util.GsonUtil;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
 import com.juhua.hangfen.eedsrd.webservice.SSLConnection;
+import com.juhua.hangfen.eedsrd.webservice.SoapAsync;
+import com.juhua.hangfen.eedsrd.webservice.SoapHelper;
+import com.juhua.hangfen.eedsrd.webservice.UpdateUI;
 
 import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class LoginActivity extends Activity {
     JsonUtils jsonUtils = new JsonUtils();
@@ -64,8 +73,6 @@ public class LoginActivity extends Activity {
     private ProgressDialog dialog;
     private final String FILE = "saveUserNamePwd";
     private SharedPreferences sp = null;
-    private static String Verify;
-    private String Token;
     private int Permission = 0;
     private static String UserName;
     private static String PassWord;
@@ -117,7 +124,6 @@ public class LoginActivity extends Activity {
                                     String[] propreties = {"USERID", "姓名", "帐号", "手机号码","固定电话","地区", "ACCESSTOKEN"};
                                     try {
                                         HashMap<String, Object> mHashMap = jsonUtils.Analysis(jsonStr, propreties);
-                                        Token = mHashMap.get("ACCESSTOKEN").toString();
                                         TinyDB tinyDB = new TinyDB(LoginActivity.this);
                                         User user = new User();
                                         user.setToken(mHashMap.get("ACCESSTOKEN").toString());
@@ -125,13 +131,14 @@ public class LoginActivity extends Activity {
                                         user.setId(mHashMap.get("USERID").toString());
                                         user.setArea(mHashMap.get("地区").toString());
                                         user.setMobile(mHashMap.get("手机号码").toString());
+                                        getNotify(user);
                                         tinyDB.putObject("user", user);
                                     } catch (JSONException e){
                                         e.printStackTrace();
+                                        intent.putExtra("Token", "");
+                                        finish();
+                                        startActivity(intent);
                                     }
-                                    intent.putExtra("Token", Token);
-                                    finish();
-                                    startActivity(intent);
 
                                 }
                             }
@@ -321,11 +328,11 @@ public class LoginActivity extends Activity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (!edtUser.getText().toString().equals("")) {
-                btnClear.setVisibility(View.VISIBLE);
-            } else {
-                btnClear.setVisibility(View.INVISIBLE);
-            }
+                if (!edtUser.getText().toString().equals("")) {
+                    btnClear.setVisibility(View.VISIBLE);
+                } else {
+                    btnClear.setVisibility(View.INVISIBLE);
+                }
         }
     };
     TextWatcher mTextWatcherPw  = new TextWatcher() {
@@ -399,7 +406,7 @@ public class LoginActivity extends Activity {
         } catch (Exception e) {
             return false;
         }finally {
-            dialog.dismiss();
+           // dialog.dismiss();
         }
         return true;
 
@@ -423,7 +430,7 @@ public class LoginActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
-            dialog.dismiss();
+           // dialog.dismiss();
         }
         return n;
     }
@@ -575,6 +582,40 @@ public class LoginActivity extends Activity {
         progressDialog.setProgress(0);
         progressDialog.show();
         updateInfoService.downLoadFile(url, progressDialog,handler1);
+    }
+
+    private void getNotify(final User user){
+        List<SoapHelper> soapHelperList = new ArrayList<SoapHelper>();
+        SoapHelper seatingNotifySoap = new SoapHelper()
+                .setTimeout(5000)
+                .methodName("GetSeatMap")
+                .addParams("verify", Constants.VERIFY)
+                .addParams("userid", user.getId());
+        SoapHelper unReadMailNotifySoap = new SoapHelper()
+                .setTimeout(5000)
+                .methodName("GetUnReadMailCount")
+                .addParams("verify", Constants.VERIFY)
+                .addParams("userid", user.getId());
+        SoapHelper bannerSoap = new SoapHelper()
+                .methodName("GetLBTList")
+                .addParams("size", "5")
+                .addParams("verify", Constants.VERIFY);
+        soapHelperList.add(bannerSoap);
+        soapHelperList.add(seatingNotifySoap);
+        soapHelperList.add(unReadMailNotifySoap);
+        new SoapAsync(soapHelperList).setUI(new UpdateUI() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onResponse(Object obj) {
+                dialog.dismiss();
+                HashMap<String, Object> resultObj = (HashMap<String, Object>) obj;
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                intent.putExtra("Notify", resultObj);
+                intent.putExtra("Token", user.getToken());
+                finish();
+                startActivity(intent);
+            }
+        }).execute();
     }
 
 }

@@ -5,6 +5,7 @@ package com.juhua.hangfen.eedsrd.widget;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
@@ -19,7 +20,10 @@ import android.widget.TextView;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.juhua.hangfen.eedsrd.R;
+import com.juhua.hangfen.eedsrd.activity.InfoActivity;
+import com.juhua.hangfen.eedsrd.activity.MainActivity;
 import com.juhua.hangfen.eedsrd.model.BannerPicture;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.util.ScreenUtils;
 import com.juhua.hangfen.eedsrd.webservice.SSLConnection;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -73,9 +77,17 @@ public class NetworkImageHolderView implements Holder<LinkedTreeMap<String, Stri
     }
 
     @Override
-    public void UpdateUI(Context context, int position, LinkedTreeMap<String, String> pic) {
+    public void UpdateUI(Context context, int position,final LinkedTreeMap<String, String> pic) {
         imageView.setImageResource(R.drawable.ic_banner_default);
         textView.setText(pic.get("TITLE"));
-        ImageLoader.getInstance().displayImage(pic.get("IMGPATH"),imageView);
+        ImageLoader.getInstance().displayImage(pic.get("IMGPATH"), imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AppManager.getAppManager().currentActivity(), InfoActivity.class);
+                intent.putExtra("id", pic.get("ID"));
+                AppManager.getAppManager().currentActivity().startActivity(intent);
+            }
+        });
     }
 }
