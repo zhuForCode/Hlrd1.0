@@ -3,6 +3,7 @@ package com.juhua.hangfen.eedsrd.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -106,14 +107,14 @@ public class HomeActivity  extends BaseActivity{
                 return new NetworkImageHolderView();
             }
         },bannerLists)
-                .setPageIndicator(new int[] {R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
+                .setPageIndicator(new int[] {R.drawable.ic_radio_button_unchecked, R.drawable.ic_lens_black})
                 .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT)
                 .setCanLoop(true);
     }
 
     private  void getBannerData(){
         SoapHelper soapHelper = new SoapHelper()
-                .setWsdl("https://dblz.zjrd.gov.cn/WebServers/ZhrdSer.asmx?WSDL")
+                .setWsdl("http://58.18.251.10:8083/WebServers/AppSer.asmx")
                 .methodName("GetLBTList")
                 .addParams("size", "5")
                 .addParams("verify", Constants.VERIFY);
@@ -138,7 +139,7 @@ public class HomeActivity  extends BaseActivity{
         buttonLists = new ArrayList<HomeButton>();
         buttonLists.add(new HomeButton(0, "代表履职", "icon_m_job", "Duty/DutyMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "Proposal/ProposalMenu.aspx?nav=show"));
-        buttonLists.add(new HomeButton(2, "代表之家", "icon_m_mqztc", "mymailListB.html"));
+        buttonLists.add(new HomeButton(2, "代表之家", "icon_m_mqztc", "http://58.18.251.10:8083/dbllz/map.html?nav=show"));
         buttonLists.add(new HomeButton(3, "人事任免", "ic_home_default", "People/ArticleList.aspx?SortId=70&nav=show"));
         buttonLists.add(new HomeButton(4, "履职参阅", "icon_m_zlk", "Duty/ConsultSort.aspx?nav=show"));
         buttonLists.add(new HomeButton(5, "交流互动", "icon_m_wljl", "Post/PostMenu.aspx?nav=show"));
@@ -154,7 +155,7 @@ public class HomeActivity  extends BaseActivity{
         float actionbarHeight = (float) 48;
         int bannerH = (int) ImageUtils.convertDpToPixel(bannerHeight, HomeActivity.this);
         int actionbarH =  (int) ImageUtils.convertDpToPixel(actionbarHeight, HomeActivity.this);
-        int gvHeight = ScreenUtils.Height - bannerH - ScreenUtils.getNavigationBarHeight() - actionbarH - ScreenUtils.getStatusBarHeight();
+        int gvHeight = ScreenUtils.Height - bannerH - actionbarH - ScreenUtils.getStatusBarHeight();
         int itemHeight = (int) Math.ceil(gvHeight/cols);
         homeButtonAdapter = new HomeButtonAdapter(HomeActivity.this, buttonLists, itemHeight);
         gridView.setAdapter(homeButtonAdapter);
@@ -229,8 +230,9 @@ public class HomeActivity  extends BaseActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i){
-                    case 9:
-                        ToastUtils.show(buttonLists.get(i).getName());
+                    case 8:
+                        Intent personIntent = new Intent(HomeActivity.this, PersonActivity.class);
+                        startActivity(personIntent);
                         break;
                     default:
                         if(buttonLists.get(i).getActionUrl().contains("nav=")){

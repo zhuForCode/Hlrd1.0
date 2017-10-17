@@ -6,9 +6,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-import com.juhua.hangfen.eedsrd.model.UserInfo;
+import com.juhua.hangfen.eedsrd.model.User;
 import com.juhua.hangfen.eedsrd.sharedpref.Preferences;
 import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
+import com.juhua.hangfen.eedsrd.tools.AppException;
 import com.juhua.hangfen.eedsrd.tools.CryptoTools;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
 
@@ -68,10 +69,10 @@ public class AppCache {
             e.printStackTrace();
         }
         TinyDB userDB = new TinyDB(mContext);
-        UserInfo userInfo;
+        User user;
         try {
-            userInfo = (UserInfo) userDB.getObject("user", UserInfo.class);
-            if(userInfo.getUSERID() != null){
+            user = (User) userDB.getObject("user", User.class);
+            if(user.getId() != null){
                 isLogged = true;
             }else{
                 isLogged = false;
@@ -81,6 +82,7 @@ public class AppCache {
         }
         ToastUtils.init(mContext);
         Preferences.init(mContext);
+        CrashHandler.getInstance().init();
     }
     public static void updateNightMode(boolean on) {
         Resources resources = getContext().getResources();

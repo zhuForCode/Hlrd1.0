@@ -13,12 +13,11 @@ import android.view.WindowManager;
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.constants.Constants;
-import com.juhua.hangfen.eedsrd.model.UserInfo;
+import com.juhua.hangfen.eedsrd.model.User;
 import com.juhua.hangfen.eedsrd.model.VersionInfo;
 import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
 import com.juhua.hangfen.eedsrd.webservice.GetModelAsync;
-import com.juhua.hangfen.eedsrd.webservice.KsoapAsync;
 import com.juhua.hangfen.eedsrd.webservice.KsoapHelpler;
 import com.juhua.hangfen.eedsrd.webservice.UpdateUI;
 
@@ -65,7 +64,7 @@ public class WelcomeActivity extends Activity {
     private void getUserAndVerision(){
         new GetModelAsync()
                 .setModelType(Constants.MODEL_TYPE_MULTIPLE)
-                .addKsoapHelpler("UserInfo", new KsoapHelpler<>(UserInfo.class)
+                .addKsoapHelpler("User", new KsoapHelpler<>(User.class)
                         .setMethodName("AppLoginForZjrd")
                         .addParams("UserName", "master")
                         .addParams("Password", "jhit361785")
@@ -79,16 +78,12 @@ public class WelcomeActivity extends Activity {
                     @Override
                     public void onResponse(Object obj) {
                         LinkedHashMap linkedHashMap = (LinkedHashMap) obj;
-                        UserInfo userInfo = (UserInfo) linkedHashMap.get("UserInfo");
+                        User user = (User) linkedHashMap.get("User");
                         VersionInfo versionInfo = (VersionInfo) linkedHashMap.get("VersionInfo");
-                        if(userInfo.getErrorCode() != 0 || userInfo.getRESPONSECODE() != 0){
-                            ToastUtils.show(userInfo.getErrorDesc() + userInfo.getRESPONSEDESC());
-                        }else{
-                            TinyDB infoDB = new TinyDB(AppCache.getContext());
-                            infoDB.putObject("UserInfo", userInfo);
-                            infoDB.putObject("VersionInfo", versionInfo);
-                            ToastUtils.show(userInfo.get姓名() + ":" + versionInfo.getDescription());
-                        }
+                        TinyDB infoDB = new TinyDB(AppCache.getContext());
+                        infoDB.putObject("User", user);
+                        infoDB.putObject("VersionInfo", versionInfo);
+                        ToastUtils.show(user.getName() + ":" + versionInfo.getDescription());
 
                     }
                 })

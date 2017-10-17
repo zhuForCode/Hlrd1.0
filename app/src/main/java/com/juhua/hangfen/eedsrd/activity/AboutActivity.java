@@ -29,6 +29,7 @@ import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.model.UpdateInfo;
 import com.juhua.hangfen.eedsrd.tools.AppContext;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.tools.DataCleanManager;
 import com.juhua.hangfen.eedsrd.tools.DialogUtil;
 import com.juhua.hangfen.eedsrd.tools.UIHelper;
@@ -52,15 +53,13 @@ public class AboutActivity extends Activity{
     UpdateInfoService updateInfoService;
     @Override
     protected void onDestroy() {
-        AppCache.removeFromStack(this);
         super.onDestroy();
-        Log.i("kjj", "onDestroy:" + getClass().getSimpleName());
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCache.addToStack(this);
         setContentView(R.layout.activity_about);
+        AppManager.getAppManager().addActivity(this);
         Button button=(Button)findViewById(R.id.update);
         Button btnBack = (Button)findViewById(R.id.back_btn);
         Button btnShare = (Button)findViewById(R.id.share);
@@ -91,7 +90,7 @@ public class AboutActivity extends Activity{
         btnBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                AppManager.getAppManager().finishActivity();
             }
         });
         button.setOnClickListener(new OnClickListener() {

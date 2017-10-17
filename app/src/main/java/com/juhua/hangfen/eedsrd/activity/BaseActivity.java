@@ -51,9 +51,7 @@ public class BaseActivity extends AppCompatActivity {
 
 
     protected void onDestroy() {
-        AppCache.removeFromStack(this);
         super.onDestroy();
-        Log.i("J.Kuai", "onDestroy:" + getClass().getSimpleName());
     }
 
     private void setSystemBarTransparent() {

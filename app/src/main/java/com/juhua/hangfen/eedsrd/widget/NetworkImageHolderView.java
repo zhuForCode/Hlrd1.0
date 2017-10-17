@@ -20,6 +20,7 @@ import com.bigkoo.convenientbanner.holder.Holder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.model.BannerPicture;
+import com.juhua.hangfen.eedsrd.util.ScreenUtils;
 import com.juhua.hangfen.eedsrd.webservice.SSLConnection;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -50,16 +51,10 @@ public class NetworkImageHolderView implements Holder<LinkedTreeMap<String, Stri
                 mRelativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
             }
         });*/
-        mRelativeLayout.post(new Runnable() {
-             @Override
-             public void run() {
-                 int height =mRelativeLayout.getHeight();
-                 layoutParams.height = (int)(0.5*height);
-             }
-         });
+
         imageView = new ImageView(context);
         mRelativeLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         imageView.setLayoutParams(new  RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -69,9 +64,10 @@ public class NetworkImageHolderView implements Holder<LinkedTreeMap<String, Stri
         textView.setTextColor(Color.WHITE);
         textView.setTextSize(14);
         textView.setGravity(Gravity.BOTTOM);
-        textView.setPadding(30, 0, 0, 25);
+        textView.setPadding(ScreenUtils.dip2px(8), ScreenUtils.dip2px(7), 0, ScreenUtils.dip2px(8));
         textView.setWidth(mRelativeLayout.getWidth());
         textView.setBackgroundResource(R.drawable.bg_gradient);
+
         mRelativeLayout.addView(textView ,layoutParams);
         return mRelativeLayout;
     }

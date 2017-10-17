@@ -25,6 +25,8 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.WebActivity"/>
         <activity android:name=".activity.AboutActivity" />
+        <activity android:name=".activity.PersonActivity"/>
+        <activity android:name=".activity.ModifyPasswordActivity"/>
         <activity android:name=".activity.PublicWebViewActivity" />
         <activity android:name=".activity.QRCodeActivity" />
     </application>

@@ -21,15 +21,13 @@ public class QRCodeActivity extends Activity{
     private TextView versionTxv;
     @Override
     protected void onDestroy() {
-        AppCache.removeFromStack(this);
         super.onDestroy();
-        Log.i("kjj", "onDestroy:" + getClass().getSimpleName());
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppManager.getAppManager().addActivity(this);
         setContentView(R.layout.activity_qrcode);
+        AppManager.getAppManager().addActivity(this);
         init();
         initData();
 
@@ -43,7 +41,7 @@ public class QRCodeActivity extends Activity{
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                AppManager.getAppManager().finishActivity();
             }
         });
         aboutTxv.setText("二维码");

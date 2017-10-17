@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/activity_background"
+    android:background="@color/common_white"
     android:weightSum="1">
     <include layout="@layout/activity_about_title"/>
 

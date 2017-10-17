@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/activity_background"
+    android:background="@color/common_white"
     android:layout_weight="1"
     android:weightSum="1">
     <include layout="@layout/activity_about_title"/>
@@ -61,9 +61,10 @@
                 android:layout_weight="1"
                 android:background="@color/common_white"
                 android:elevation="0dp"
-                android:paddingStart="15sp"
+                android:paddingLeft="15sp"
                 android:text="@string/banbenshengji"
                 android:textAlignment="viewStart"
+                android:layout_gravity="start"
                 android:textSize="18sp" />
 
             <ImageView
@@ -71,6 +72,7 @@
                 android:background="@color/common_white"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dip"
+                android:layout_marginRight="5dip"
                 android:src="@drawable/ic_navigate_next" />
         </LinearLayout>
 
@@ -88,14 +90,17 @@
                 android:layout_weight="1"
                 android:elevation="0sp"
                 android:paddingStart="15sp"
+                android:paddingLeft="15sp"
                 android:text="@string/erweima"
                 android:textAlignment="viewStart"
+                android:layout_gravity="start"
                 android:textSize="18sp" />
 
             <ImageView
                 android:layout_width="20dip"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dip"
+                android:layout_marginRight="5dip"
                 android:src="@drawable/ic_navigate_next" />
         </LinearLayout>
 
@@ -115,12 +120,14 @@
                 android:paddingLeft="15sp"
                 android:text="@string/ruanjianfenxiang"
                 android:textAlignment="viewStart"
+                android:layout_gravity="start"
                 android:textSize="18sp" />
 
             <ImageView
                 android:layout_width="20dip"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dip"
+                android:layout_marginRight="5dip"
                 android:src="@drawable/ic_navigate_next" />
         </LinearLayout>
 
@@ -140,12 +147,14 @@
                 android:paddingLeft="15sp"
                 android:text="@string/qingchuhuancun"
                 android:textAlignment="viewStart"
+                android:layout_gravity="start"
                 android:textSize="18sp" />
 
             <ImageView
                 android:layout_width="20dip"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dip"
+                android:layout_marginRight="5dip"
                 android:src="@drawable/ic_navigate_next" />
         </LinearLayout>
 

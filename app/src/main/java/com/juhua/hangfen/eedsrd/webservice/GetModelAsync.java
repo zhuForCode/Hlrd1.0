@@ -1,14 +1,10 @@
 package com.juhua.hangfen.eedsrd.webservice;
 
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import com.juhua.hangfen.eedsrd.constants.Constants;
-import com.juhua.hangfen.eedsrd.model.UserInfo;
-import com.juhua.hangfen.eedsrd.model.VersionInfo;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 

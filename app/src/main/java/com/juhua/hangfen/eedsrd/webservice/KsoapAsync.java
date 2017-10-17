@@ -3,23 +3,11 @@ package com.juhua.hangfen.eedsrd.webservice;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.juhua.hangfen.eedsrd.constants.Constants;
-import com.juhua.hangfen.eedsrd.model.UserInfo;
+import com.juhua.hangfen.eedsrd.model.User;
 import com.juhua.hangfen.eedsrd.model.VersionInfo;
 
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,7 +45,7 @@ public class KsoapAsync extends AsyncTask<String[], Void, Object> {
     }
     private HashMap getMultipleModel(){
         HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("UserInfo", new KsoapHelpler<>(UserInfo.class)
+        map.put("User", new KsoapHelpler<>(User.class)
                 .setMethodName("AppLoginForZjrd")
                 .addParams("UserName", "master")
                 .addParams("Password", "jhit3617857")

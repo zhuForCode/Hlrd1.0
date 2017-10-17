@@ -13,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,12 +32,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.constants.Constants;
 import com.juhua.hangfen.eedsrd.model.UpdateInfo;
+import com.juhua.hangfen.eedsrd.model.User;
+import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
 import com.juhua.hangfen.eedsrd.tools.AppContext;
 import com.juhua.hangfen.eedsrd.tools.CryptoTools;
 import com.juhua.hangfen.eedsrd.tools.DialogUtil;
@@ -116,9 +116,16 @@ public class LoginActivity extends Activity {
                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     String[] propreties = {"USERID", "姓名", "帐号", "手机号码","固定电话","地区", "ACCESSTOKEN"};
                                     try {
-                                        //  userID = jsonUtils.Analysis(jsonStr, propreties).get("USERID").toString();
-                                        //   UName =  jsonUtils.Analysis(jsonStr, propreties).get("姓名").toString();
-                                        Token = jsonUtils.Analysis(jsonStr, propreties).get("ACCESSTOKEN").toString();
+                                        HashMap<String, Object> mHashMap = jsonUtils.Analysis(jsonStr, propreties);
+                                        Token = mHashMap.get("ACCESSTOKEN").toString();
+                                        TinyDB tinyDB = new TinyDB(LoginActivity.this);
+                                        User user = new User();
+                                        user.setToken(mHashMap.get("ACCESSTOKEN").toString());
+                                        user.setName(mHashMap.get("姓名").toString());
+                                        user.setId(mHashMap.get("USERID").toString());
+                                        user.setArea(mHashMap.get("地区").toString());
+                                        user.setMobile(mHashMap.get("手机号码").toString());
+                                        tinyDB.putObject("user", user);
                                     } catch (JSONException e){
                                         e.printStackTrace();
                                     }

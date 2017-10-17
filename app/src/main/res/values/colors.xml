@@ -23,11 +23,11 @@
     <!-- For safe cases -->
     <color name="common_green">#60990c</color>
     <color name="common_blue">#4b8bbd</color>
-    <color name="tab_indicator_text">#000000</color>
+    <color name="commob_black">#000000</color>
     <color name="tab_indicator_text_selected">#CC0013</color>
     <color name="tab_indicator_text_unselected">#aac5d7</color>
     <color name="page_viewer_margin_color">#CCCCCC</color>
     <color name="griditems_bg">#ffe8ecef</color>
-    <color name="commo_text_color">#ff333333</color>
+    <color name="common_black_shadow">#ff333333</color>
     <color name="line">#ffd3dde6</color>
 </resources>

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -40,12 +41,15 @@ import android.widget.TextView;
 import com.juhua.hangfen.eedsrd.R;
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.constants.Constants;
+import com.juhua.hangfen.eedsrd.enums.LoadStateEnum;
 import com.juhua.hangfen.eedsrd.model.Nav;
 import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.tools.FileUtils;
 import com.juhua.hangfen.eedsrd.tools.NetUtil;
+import com.juhua.hangfen.eedsrd.util.DownloadUtil;
 import com.juhua.hangfen.eedsrd.util.GsonUtil;
 import com.juhua.hangfen.eedsrd.util.ToastUtils;
+import com.juhua.hangfen.eedsrd.util.ViewUtils;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
@@ -61,20 +65,28 @@ import static com.juhua.hangfen.eedsrd.constants.Constants.RESULT_CONTACT_CONFIR
  */
 
 public class WebActivity extends BaseActivity {
+    private LinearLayout llLoading;//页面加载中
+    private LinearLayout llLoadFail;//页面加载失败
+    private TextView loadFailText;//页面加载失败 点击textview重新加载
+
+    private LoadStateEnum loadState = LoadStateEnum.LOAD_SUCCESS;
     protected WebView webView;
     private ProgressDialog mLoading;
     protected LinearLayout actionbarLL;
     protected RelativeLayout rightBtnRL;
     protected Button rightBtn;//actionbar 右键
-    protected int btnCode = 0;//根据webview url传来的code值确定actionbar右键的文字属性
     protected ImageView rightBtnImageView;
     protected View.OnClickListener historyPageListener;
 
+    protected ProgressDialog progressFile;//下载附件
+    protected AlertDialog.Builder builder;//附件下载对话框
+
     private ValueCallback<Uri> mUploadMessageSingle;
     private ValueCallback<Uri[]> mUploadMessage;
-    private final static int FILECHOOSER_RESULTCODE=1;
 
     public final Handler mHandler = new Handler();
+
+    private final static int FILECHOOSER_RESULTCODE=1;
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -102,7 +114,12 @@ public class WebActivity extends BaseActivity {
         rightBtn = (Button) findViewById(R.id.right_btn);
         rightBtnImageView = (ImageView)findViewById(R.id.right_btn_image);
 
+        llLoadFail = (LinearLayout)findViewById(R.id.ll_load_fail);
+        llLoading = (LinearLayout)findViewById(R.id.ll_loading);
+        loadFailText = (TextView) llLoadFail.findViewById(R.id.tv_load_fail_text);
+
         webView = (WebView) findViewById(R.id.web);
+        ViewUtils.changeViewState(webView, llLoading, llLoadFail, LoadStateEnum.LOADING);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDomStorageEnabled(true);
@@ -140,17 +157,25 @@ public class WebActivity extends BaseActivity {
                 if(formData != null){
                     webView.loadUrl("javascript: prepareData('" + formData + "');");
                 }
+                if(loadState == LoadStateEnum.LOAD_SUCCESS){
+                    ViewUtils.changeViewState(view, llLoading, llLoadFail, LoadStateEnum.LOAD_SUCCESS);
+                }else{
+                    ViewUtils.changeViewState(webView, llLoading, llLoadFail, LoadStateEnum.LOAD_FAIL);
+                }
             }
             @SuppressWarnings("deprecation")
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-
+                Log.d("kjj-2", failingUrl);
+                loadState = LoadStateEnum.LOAD_FAIL;
             }
 
             @TargetApi(android.os.Build.VERSION_CODES.M)
             @Override
             public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
                 onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
+                Log.d("kjj-2", req.getUrl().toString());
+                loadState = LoadStateEnum.LOAD_FAIL;
             }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -173,6 +198,10 @@ public class WebActivity extends BaseActivity {
                     titleTv.setText(titleArray[0] + "\n" + titleArray[1]);
                 }else{
                     titleTv.setText(title);
+                }
+                if(title.contains("网页无法打开") || title.contains("error")){
+                    loadState = LoadStateEnum.LOAD_FAIL;
+                    titleTv.setText("出错了");
                 }
 
             }
@@ -309,16 +338,27 @@ public class WebActivity extends BaseActivity {
     }
 
     public void loadURL(){
-        StringBuilder builder = new StringBuilder(Constants.DOMAIN_NAME);
+        final StringBuilder builder = new StringBuilder(Constants.DOMAIN_NAME);
         try {
             if(getIntent().getExtras().get("Token") == null){
-                webView.loadUrl("file:///android_asset/error.html");//加载错误页面
+
             }else{
                 builder.append("LzptApp/Transfer.aspx?token=");
                 builder.append(getIntent().getExtras().getString("Token"));
                 builder.append("&actionUrl=");
                 builder.append(getIntent().getExtras().getString("actionUrl"));
-                webView.loadUrl(builder.toString());
+                if(getIntent().getExtras().getString("actionUrl").contains("http://")){
+                    webView.loadUrl(getIntent().getExtras().getString("actionUrl"));
+                    WebSettings settings = webView.getSettings();
+                    //支持屏幕缩放
+                    settings.setSupportZoom(true);
+                    settings.setBuiltInZoomControls(true);
+                    settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+                    settings.setLoadWithOverviewMode(true);
+                    settings.setUseWideViewPort(true);//关键点
+                }else{
+                    webView.loadUrl(builder.toString());
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -334,7 +374,6 @@ public class WebActivity extends BaseActivity {
             webView.destroy();
             webView = null;
         }
-        Log.i("kjj", "onDestroy:" + getClass().getSimpleName());
         super.onDestroy();
     }
 
@@ -443,16 +482,19 @@ public class WebActivity extends BaseActivity {
         @JavascriptInterface
         public  void newWeb(String url){
             if(url.contains("nav=new")){
-                Intent intent = new Intent(AppCache.getContext(), WebActivity.class);
+                Intent intent = new Intent(WebActivity.this, WebActivity.class);
                 String u = url.split("LzptApp/")[1];
                 try {
-                    intent.putExtra("actionUrl", URLEncoder.encode(u, "utf-8"));
+                    if(u.contains("&")){
+                        u = u.replace("&", "%2526");//强行对&编码两次   & -> %26   -> %2526 因为在c#端会解码两次
+                    }
+                    intent.putExtra("actionUrl", u);
                 }catch (Exception e){
                     intent.putExtra("actionUrl", u);
                 }
 
                 intent.putExtra("Token", getIntent().getExtras().getString("Token"));
-                AppCache.getContext().startActivity(intent);
+                startActivity(intent);
             }
 
         }
@@ -559,76 +601,6 @@ public class WebActivity extends BaseActivity {
 
         }
 
-
-        @JavascriptInterface
-        public void setNav1(String jsonData){
-            final HashMap<String, Object> paramsMap = GsonUtil.parseJsonObject(jsonData);
-            Runnable runnableUI = new Runnable() {
-                @Override
-                public void run() {
-                    if(paramsMap.containsKey("Left")){
-                        HashMap<String, Object> map = (HashMap<String, Object>) paramsMap.get("Left");
-                        if(map.containsKey("Click")) {
-                            backButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    webView.loadUrl("javascript: navLeftClick();");
-                                }
-                            });
-                        }
-                    }
-                    if(paramsMap.containsKey("Center")){
-                        if(paramsMap.containsKey("disabled")){
-                            rightBtn.setEnabled((boolean)paramsMap.get("disabled"));
-                        }
-                        if(paramsMap.containsKey("text")){
-
-                            if(paramsMap.containsKey("icon")){
-                                Typeface typeface=Typeface.createFromAsset(getAssets(),  "fonts/iconfont.ttf");
-                                String text = (String)paramsMap.get("text") + " " + (String)paramsMap.get("icon");
-                                titleTv.setTypeface(typeface);
-                                titleTv.setText(text);
-                            }else{
-                                titleTv.setText((String)paramsMap.get("text"));
-                            }
-                        }
-
-                        titleTv.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                webView.loadUrl("javascript: navCenterClick();");
-                            }
-                        });
-                    }
-                    if(paramsMap.containsKey("Right")){
-
-                        if(paramsMap.containsKey("visible")){
-                            if((boolean)paramsMap.get("visible")){
-                                rightBtnRL.setVisibility(View.VISIBLE);
-                            }else{
-                                rightBtnRL.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                        if(paramsMap.containsKey("disabled")){
-                            rightBtn.setEnabled((boolean)paramsMap.get("disabled"));
-                        }
-                        if(paramsMap.containsKey("text")){
-                            rightBtn.setText((String)paramsMap.get("text"));
-                        }
-
-                        rightBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                webView.loadUrl("javascript: navRightClick();");
-                            }
-                        });
-                    }
-
-                }
-            };
-            mHandler.post(runnableUI);
-        }
-
         @JavascriptInterface
         public void addLoading(String message){
             mLoading = ProgressDialog.show(WebActivity.this, "", message);
@@ -644,6 +616,191 @@ public class WebActivity extends BaseActivity {
             ToastUtils.show(message);
         }
 
+        @JavascriptInterface
+        public void toDownloadFile(final String urlD){
+            builder = new AlertDialog.Builder(WebActivity.this);
+            progressFile = new ProgressDialog(WebActivity.this);    //进度条，在下载的时候实时更新进度，提高用户友好度
+            progressFile.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressFile.setIcon(getResources().getDrawable(R.drawable.ic_file_download));
+            progressFile.setTitle("  正在下载");
+            progressFile.setMessage("请稍候...");
+            progressFile.setProgress(0);
+            progressFile.setCancelable(false);
+            progressFile.setButton(DialogInterface.BUTTON_NEGATIVE, "后台下载",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            progressFile.dismiss();
+                        }
+                    });
+            progressFile.show();
+            final String sdcard = FileUtils.getDownloadDir();
+            int idx = urlD.lastIndexOf("/") + 1;
+            final String fileName = urlD.substring(idx);
+            DownloadUtil.get().download(urlD, sdcard, new DownloadUtil.OnDownloadListener() {
+                @Override
+                public void onDownloadSuccess() {
+                    progressFile.dismiss();
+                    builder.setIcon(getResources().getDrawable(R.drawable.ic_cloud_done));
+                    builder.setTitle("下载成功");
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.setPositiveButton("直接打开", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                File file = new File(sdcard + fileName);
+                                openFile(file);
+                            }catch (Exception e){
+                                ToastUtils.show("无法打开文件！");
+                            }
+                        }
+                    });
+                    builder.setMessage("文件已保存至：" + sdcard + fileName);
+                    builder.setCancelable(true);
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            builder.create().show();
+                        }
+                    };
+                    mHandler.post(runnable);
+                }
+
+                @Override
+                public void onDownloading(int progress) {
+                    progressFile.setProgress(progress);
+                }
+
+                @Override
+                public void onDownloadFailed() {
+                    progressFile.dismiss();
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.show("下载失败！");
+                        }
+                    };
+                    mHandler.post(runnable);
+                }
+            });
+        }
+    }
+
+    /**
+     * 获得文件的mimeType
+     * @param file
+     * @return
+     */
+    public static String getMIMEType(File file) {
+        String type = "*";
+        if(file == null) return type;
+        String fName = file.getName();
+        // 取得扩展名
+        String end = fName.substring(fName.lastIndexOf("."),
+                fName.length()).toLowerCase();
+        if (end.equals("")) return type;
+        //在MIME和文件类型的匹配表中找到对应的MIME类型。
+        for (int i = 0; i < MIME_MapTable.length; i++) {
+            if (end.equals(MIME_MapTable[i][0]))
+                type = MIME_MapTable[i][1];
+        }
+
+        return type;
+    }
+
+    private void openFile(File file){
+        //Uri uri = Uri.parse("file://"+file.getAbsolutePath());
+        testClearDefault();
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //设置intent的Action属性
+        intent.setAction(Intent.ACTION_VIEW);
+        //获取文件file的MIME类型
+        String type = getMIMEType(file);
+        //设置intent的data和Type属性。
+        intent.setDataAndType(Uri.fromFile(file), type);
+        //跳转
+        startActivity(intent);
+    }
+
+    private static String[][] MIME_MapTable = {
+            //{后缀名， MIME类型}
+            {".3gp", "video/3gpp"},
+            {".apk", "application/vnd.android.package-archive"},
+            {".asf", "video/x-ms-asf"},
+            {".avi", "video/x-msvideo"},
+            {".bin", "application/octet-stream"},
+            {".bmp", "image/bmp"},
+            {".c", "text/plain"},
+            {".class", "application/octet-stream"},
+            {".conf", "text/plain"},
+            {".cpp", "text/plain"},
+            {".doc", "application/msword"},
+            {".xls", "application/msword"},
+            {".xlsx", "application/msword"},
+            {".docx", "application/msword"},
+            {".exe", "application/octet-stream"},
+            {".gif", "image/gif"},
+            {".gtar", "application/x-gtar"},
+            {".gz", "application/x-gzip"},
+            {".h", "text/plain"},
+            {".htm", "text/html"},
+            {".html", "text/html"},
+            {".jar", "application/java-archive"},
+            {".java", "text/plain"},
+            {".jpeg", "image/jpeg"},
+            {".jpg", "image/jpeg"},
+            {".js", "application/x-javascript"},
+            {".log", "text/plain"},
+            {".m3u", "audio/x-mpegurl"},
+            {".m4a", "audio/mp4a-latm"},
+            {".m4b", "audio/mp4a-latm"},
+            {".m4p", "audio/mp4a-latm"},
+            {".m4u", "video/vnd.mpegurl"},
+            {".m4v", "video/x-m4v"},
+            {".mov", "video/quicktime"},
+            {".mp2", "audio/x-mpeg"},
+            {".mp3", "audio/x-mpeg"},
+            {".mp4", "video/mp4"},
+            {".mpc", "application/vnd.mpohun.certificate"},
+            {".mpe", "video/mpeg"},
+            {".mpeg", "video/mpeg"},
+            {".mpg", "video/mpeg"},
+            {".mpg4", "video/mp4"},
+            {".mpga", "audio/mpeg"},
+            {".msg", "application/vnd.ms-outlook"},
+            {".ogg", "audio/ogg"},
+            {".pdf", "application/pdf"},
+            {".png", "image/png"},
+            {".pps", "application/vnd.ms-powerpoint"},
+            {".pptx", "application/vnd.ms-powerpoint"},
+            {".prop", "text/plain"},
+            {".rar", "application/x-rar-compressed"},
+            {".rc", "text/plain"},
+            {".rmvb", "audio/x-pn-realaudio"},
+            {".rtf", "application/rtf"},
+            {".sh", "text/plain"},
+            {".tar", "application/x-tar"},
+            {".tgz", "application/x-compressed"},
+            {".txt", "text/plain"},
+            {".wav", "audio/x-wav"},
+            {".wma", "audio/x-ms-wma"},
+            {".wmv", "audio/x-ms-wmv"},
+            {".wps", "application/vnd.ms-works"},
+            //{".xml", "text/xml"},
+            {".xml", "text/plain"},
+            {".z", "application/x-compress"},
+            {".zip", "application/zip"},
+            {"", "*/*"}
+    };
+    public void testClearDefault() {//清除设置的默认值
+        PackageManager pm = this.getPackageManager();
+        pm.clearPackagePreferredActivities(this.getPackageName());
     }
 
 }

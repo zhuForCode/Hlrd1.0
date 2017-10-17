@@ -2,6 +2,9 @@ package com.juhua.hangfen.eedsrd.util;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.juhua.hangfen.eedsrd.tools.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,53 +43,59 @@ public class DownloadUtil {
      * @param listener 下载监听
      */
     public void download(final String url, final String saveDir, final OnDownloadListener listener) {
-        Request request = new Request.Builder().url(url).build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                // 下载失败
-                listener.onDownloadFailed();
-            }
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len = 0;
-                FileOutputStream fos = null;
-                // 储存下载文件的目录
-                String savePath = isExistDir(saveDir);
-                try {
-                    is = response.body().byteStream();
-                    long total = response.body().contentLength();
-                    File file = new File(savePath, getNameFromUrl(url));
-                    fos = new FileOutputStream(file);
-                    long sum = 0;
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                        sum += len;
-                        int progress = (int) (sum * 1.0f / total * 100);
-                        // 下载中
-                        listener.onDownloading(progress);
-                    }
-                    fos.flush();
-                    // 下载完成
-                    listener.onDownloadSuccess();
-                } catch (Exception e) {
+        try {
+            Request request = new Request.Builder().url(url).build();
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    // 下载失败
                     listener.onDownloadFailed();
-                } finally {
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    InputStream is = null;
+                    byte[] buf = new byte[2048];
+                    int len = 0;
+                    FileOutputStream fos = null;
+                    // 储存下载文件的目录
+                    String savePath = isExistDir(saveDir);
                     try {
-                        if (is != null)
-                            is.close();
-                    } catch (IOException e) {
-                    }
-                    try {
-                        if (fos != null)
-                            fos.close();
-                    } catch (IOException e) {
+                        is = response.body().byteStream();
+                        long total = response.body().contentLength();
+                        File file = new File(savePath, getNameFromUrl(url));
+                        fos = new FileOutputStream(file);
+                        long sum = 0;
+                        while ((len = is.read(buf)) != -1) {
+                            fos.write(buf, 0, len);
+                            sum += len;
+                            int progress = (int) (sum * 1.0f / total * 100);
+                            // 下载中
+                            listener.onDownloading(progress);
+                        }
+                        fos.flush();
+                        // 下载完成
+                        listener.onDownloadSuccess();
+                    } catch (Exception e) {
+                        Log.d("kjj", e.toString());
+                        listener.onDownloadFailed();
+                    } finally {
+                        try {
+                            if (is != null)
+                                is.close();
+                        } catch (IOException e) {
+                        }
+                        try {
+                            if (fos != null)
+                                fos.close();
+                        } catch (IOException e) {
+                        }
                     }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            listener.onDownloadFailed();
+        }
+
     }
 
     /**
@@ -97,12 +106,11 @@ public class DownloadUtil {
      */
     private String isExistDir(String saveDir) throws IOException {
         // 下载位置
-        File downloadFile = new File(Environment.getExternalStorageDirectory(), saveDir);
+        File downloadFile = new File(com.juhua.hangfen.eedsrd.tools.FileUtils.getDownloadDir());
         if (!downloadFile.mkdirs()) {
             downloadFile.createNewFile();
         }
-        String savePath = downloadFile.getAbsolutePath();
-        return savePath;
+        return downloadFile.getAbsolutePath();
     }
 
     /**
