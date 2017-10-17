@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/actionbar_layout"/>
     <com.bigkoo.convenientbanner.ConvenientBanner
         android:id="@+id/home_banner"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="190dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ll_notify"
+        android:visibility="gone"
+        android:layout_height="30dp"
+        tools:ignore="UseCompoundDrawables">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_volume_down"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:contentDescription=""
+            tools:ignore="ContentDescription" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:id="@+id/tv_notify_text"/>
+    </LinearLayout>
     <GridView
         android:id="@+id/home_buttons_grid"
         android:layout_width="match_parent"

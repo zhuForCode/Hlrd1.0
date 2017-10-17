@@ -5,11 +5,13 @@ import android.app.Application;
 import com.juhua.hangfen.eedsrd.application.ThisApplication;
 import com.juhua.hangfen.eedsrd.tools.NetworkUtils;
 
+import java.io.Serializable;
+
 /**
  * Created by congj on 2017/9/13.
  */
 
-public class GetData<T> {
+public class GetData<T>  implements Serializable {
     private  boolean success;
     private  int errorCode;
     private String errorDesc;

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -34,6 +35,8 @@ import com.juhua.hangfen.eedsrd.constants.Constants;
 import com.juhua.hangfen.eedsrd.model.BannerPicture;
 import com.juhua.hangfen.eedsrd.model.GetData;
 import com.juhua.hangfen.eedsrd.model.HomeButton;
+import com.juhua.hangfen.eedsrd.model.JsonMessage;
+import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
 import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.util.AsyncUtil;
 import com.juhua.hangfen.eedsrd.util.GsonUtil;
@@ -46,6 +49,7 @@ import com.juhua.hangfen.eedsrd.webservice.SoapAsync;
 import com.juhua.hangfen.eedsrd.webservice.SoapHelper;
 import com.juhua.hangfen.eedsrd.webservice.TSoap;
 import com.juhua.hangfen.eedsrd.webservice.UpdateUI;
+import com.juhua.hangfen.eedsrd.widget.MaterialBadgeTextView;
 import com.juhua.hangfen.eedsrd.widget.NetworkImageHolderView;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -67,6 +71,9 @@ public class HomeActivity  extends BaseActivity{
     private ConvenientBanner homeBanner;
     private List<BannerPicture> bannerLists;
     private List<HomeButton> buttonLists;
+    private LinearLayout notifyLL;
+    private TextView notifyTv;
+    private MaterialBadgeTextView mailBadge;
     private GridView gridView;
     private HomeButtonAdapter homeButtonAdapter;
 
@@ -85,9 +92,11 @@ public class HomeActivity  extends BaseActivity{
         backButtonRl = (RelativeLayout)findViewById(R.id.back_button_rl);
 
         homeBanner = (ConvenientBanner) findViewById(R.id.home_banner);
+        notifyLL = (LinearLayout)findViewById(R.id.ll_notify);
+        notifyTv = (TextView) findViewById(R.id.tv_notify_text);
         gridView = (GridView) findViewById(R.id.home_buttons_grid);
     }
-
+    @SuppressWarnings("unchecked")
     protected  void bindControl(){
         backButtonRl.setVisibility(View.INVISIBLE);
         titleTv.setText(this.getResources().getString(R.string.home_title));
@@ -95,8 +104,18 @@ public class HomeActivity  extends BaseActivity{
 
         initImageLoader();
         getLocalButton();
-        getBannerData();
-   //     getButtonData();
+        Object notifyObject = getIntent().getExtras().get("Notify");
+        if(notifyObject != null){
+            HashMap<String, Object> notifyMap = (HashMap<String, Object>) notifyObject;
+            GetData<String> seatData= (GetData<String>)notifyMap.get("GetSeatMap");
+            GetData<String> unreadNumData = (GetData<String>)notifyMap.get("GetUnReadMailCount");
+            GetData<String> bannerData = (GetData<String>)notifyMap.get("GetLBTList");
+            setBannerData(bannerData);
+            setNotify(seatData);
+            setUnReadMailNum(unreadNumData);
+        }else{
+            setGridViewItemHeight(false);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -112,27 +131,13 @@ public class HomeActivity  extends BaseActivity{
                 .setCanLoop(true);
     }
 
-    private  void getBannerData(){
-        SoapHelper soapHelper = new SoapHelper()
-                .setWsdl("http://58.18.251.10:8083/WebServers/AppSer.asmx")
-                .methodName("GetLBTList")
-                .addParams("size", "5")
-                .addParams("verify", Constants.VERIFY);
-        new SoapAsync(soapHelper).setUI(new UpdateUI() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public void onResponse(Object obj) {
-                HashMap<String, Object> resultObj = (HashMap<String, Object>) obj;
-                GetData<String> result =(GetData<String>) resultObj.get("GetLBTList");
-                if(result.isSuccess()){
-                    bannerLists = GsonUtil.parseJsonArrayWithGson("[" + result.getData() + "]", BannerPicture.class);
-                    setHomeBanner();
-                }else{
-                    ToastUtils.show(result.getErrorDesc());
-                }
-            }
-        }).execute();
-
+    private  void setBannerData(GetData<String> result){
+        if(result.isSuccess()){
+            bannerLists = GsonUtil.parseJsonArrayWithGson("[" + result.getData() + "]", BannerPicture.class);
+            setHomeBanner();
+        }else{
+            ToastUtils.show(result.getErrorDesc());
+        }
     }
 
     private void getLocalButton(){
@@ -146,23 +151,26 @@ public class HomeActivity  extends BaseActivity{
         buttonLists.add(new HomeButton(6, "短信平台", "icon_m_mail", "Mailbox/MailList.aspx?nav=show"));
         buttonLists.add(new HomeButton(7, "代表数据库", "icon_m_myplatform", "People/Database.aspx?nav=show"));
         buttonLists.add(new HomeButton(8, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));
+        setGridView();
+    }
+    private void setGridViewItemHeight(boolean showNotify){
         int cols = 3;
         if(buttonLists.size() > 9){
             cols = 4;
         }
         gridView.setNumColumns(cols);
-        float bannerHeight = (float) 200;
+        float bannerHeight = (float) 190;
         float actionbarHeight = (float) 48;
+        float notifyHeight = (float) (showNotify ? 30 : 0);
         int bannerH = (int) ImageUtils.convertDpToPixel(bannerHeight, HomeActivity.this);
         int actionbarH =  (int) ImageUtils.convertDpToPixel(actionbarHeight, HomeActivity.this);
-        int gvHeight = ScreenUtils.Height - bannerH - actionbarH - ScreenUtils.getStatusBarHeight();
+        int notifyH = (int) ImageUtils.convertDpToPixel(notifyHeight, HomeActivity.this);
+        int gvHeight = ScreenUtils.Height - bannerH - actionbarH - notifyH - ScreenUtils.getStatusBarHeight();
         int itemHeight = (int) Math.ceil(gvHeight/cols);
         homeButtonAdapter = new HomeButtonAdapter(HomeActivity.this, buttonLists, itemHeight);
         gridView.setAdapter(homeButtonAdapter);
-        setGridView();
-
     }
-
+    //动态获取菜单button
     private  void getButtonData(){
         SoapHelper soapHelper = new SoapHelper()
                 .setWsdl("https://dblz.zjrd.gov.cn/WebServers/ZhrdSer.asmx?WSDL")
@@ -223,7 +231,6 @@ public class HomeActivity  extends BaseActivity{
         }).execute();
     }
 
-
     private void setGridView(){
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -269,6 +276,43 @@ public class HomeActivity  extends BaseActivity{
                 .diskCacheFileNameGenerator(new Md5FileNameGenerator())
                 .tasksProcessingOrder(QueueProcessingType.LIFO).build();
         ImageLoader.getInstance().init(config);
+    }
+
+    private void setNotify(GetData<String> result){
+        if(result.isSuccess()){//设备请求服务器成功与否
+            JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(result.getData(), JsonMessage.class);
+            if(jsonMessage.isSuccess()){//服务器请求数据库成功与否
+                if(jsonMessage.getCode() == 200){
+                    notifyTv.setText(jsonMessage.getMessage());
+                    notifyLL.setVisibility(View.VISIBLE);
+                    setGridViewItemHeight(true);
+                }
+            }else{
+                ToastUtils.show(jsonMessage.getMessage());
+                setGridViewItemHeight(false);
+            }
+        }else{
+            ToastUtils.show(result.getErrorDesc());
+            setGridViewItemHeight(false);
+        }
+    }
+    private void setUnReadMailNum(GetData<String> result){
+        if(result.isSuccess()){//设备请求服务器成功与否
+            JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(result.getData(), JsonMessage.class);
+            if(jsonMessage.isSuccess()){//服务器请求数据库成功与否
+                final int num = Integer.parseInt(jsonMessage.getMessage());
+                gridView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        View itemView = gridView.getChildAt(6);
+                        mailBadge = (MaterialBadgeTextView) itemView.findViewById(R.id.unread_mail_badge);
+                        mailBadge.setBadgeCount(num);
+                        mailBadge.setVisibility(View.VISIBLE);
+                    }
+                });
+
+            }
+        }
     }
 
 

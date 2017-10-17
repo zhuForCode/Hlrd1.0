@@ -3,19 +3,33 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@drawable/gv_selector"
-
     android:layout_height="match_parent">
-    <ImageView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:layout_gravity="center"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_weight="1"
-        android:paddingRight="28dp"
-        android:paddingTop="28dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="28dp"
-        android:id="@+id/home_grid_image" />
+        android:layout_height="wrap_content">
+        <com.juhua.hangfen.eedsrd.widget.MaterialBadgeTextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:textColor="@color/common_white"
+            android:background="@color/colorAccent"
+            android:id="@+id/unread_mail_badge"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:paddingRight="28dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="28dp"
+            android:id="@+id/home_grid_image" />
+    </RelativeLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
