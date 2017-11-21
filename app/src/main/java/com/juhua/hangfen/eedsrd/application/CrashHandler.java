@@ -39,9 +39,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         if (!BuildConfig.DEBUG) {
-            saveCrashInfo(ex);
+          //  saveCrashInfo(ex);
         }
-      //  saveCrashInfo(ex);
+        saveCrashInfo(ex);
         Log.d("crash-save", ex.toString());
         mDefaultHandler.uncaughtException(thread, ex);
     }

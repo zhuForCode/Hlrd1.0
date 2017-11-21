@@ -30,6 +30,7 @@
             android:singleLine="true"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
+            android:text="尊敬的蒯家劲，您在鄂尔多斯第十一届人民代表大会第四次会议中的座位为第14排第16列"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:id="@+id/tv_notify_text"/>

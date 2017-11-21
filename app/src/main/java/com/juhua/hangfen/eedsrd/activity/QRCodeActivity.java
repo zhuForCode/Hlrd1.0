@@ -45,6 +45,8 @@ public class QRCodeActivity extends Activity{
             }
         });
         aboutTxv.setText("二维码");
-        versionTxv.setText(getIntent().getExtras().getString("appVersion").toString());
+        if(getIntent().getExtras().getString("appVersion") != null){
+            versionTxv.setText(getIntent().getExtras().getString("appVersion"));
+        }
     }
 }

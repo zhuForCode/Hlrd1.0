@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.juhua.hangfen.eedsrd.application.AppCache;
 import com.juhua.hangfen.eedsrd.tools.AppException;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
@@ -19,7 +20,7 @@ public class ThisApplication extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        AppCache.init(this);
+        AppManager.init(this);
     }
 
     public static Context getContext(){

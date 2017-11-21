@@ -42,6 +42,7 @@ import com.juhua.hangfen.eedsrd.model.UpdateInfo;
 import com.juhua.hangfen.eedsrd.model.User;
 import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
 import com.juhua.hangfen.eedsrd.tools.AppContext;
+import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.tools.CryptoTools;
 import com.juhua.hangfen.eedsrd.tools.DialogUtil;
 import com.juhua.hangfen.eedsrd.tools.JsonUtils;
@@ -87,9 +88,7 @@ public class LoginActivity extends Activity {
     private UpdateInfoService updateInfoService;
     @Override
     protected void onDestroy() {
-        AppCache.removeFromStack(this);
         super.onDestroy();
-        Log.i("kjj", "onDestroy:" + getClass().getSimpleName());
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +131,7 @@ public class LoginActivity extends Activity {
                                         user.setArea(mHashMap.get("地区").toString());
                                         user.setMobile(mHashMap.get("手机号码").toString());
                                         getNotify(user);
+                                        AppManager.getAppManager().setUser(user);
                                         tinyDB.putObject("user", user);
                                     } catch (JSONException e){
                                         e.printStackTrace();
@@ -386,6 +386,7 @@ public class LoginActivity extends Activity {
                 editor.apply();
                 Looper.prepare();
                 DialogUtil.showDialog(this, "用户名或密码错误！", false);
+                dialog.dismiss();
                 Looper.loop();
                 return false;
             }else if(n == -3){
@@ -394,6 +395,7 @@ public class LoginActivity extends Activity {
                 editor.apply();
                 Looper.prepare();
                 DialogUtil.showDialog(this, "您一个小时内输入的帐号密码超过上限，请等待45分钟后再试!", false);
+                dialog.dismiss();
                 Looper.loop();
                 return false;
             }else if(n == -2 || n == 0){
@@ -401,12 +403,13 @@ public class LoginActivity extends Activity {
                 DialogUtil.showDialog(this, "服务器响应异常，请重新尝试或与管理员联系！", false);
               //  DialogUtil.showDialog(this, "服务器响应异常！请重新尝试或与管理员联系！", false);
                 Looper.loop();
+                dialog.dismiss();
             }
 
         } catch (Exception e) {
             return false;
         }finally {
-           // dialog.dismiss();
+
         }
         return true;
 
@@ -420,17 +423,20 @@ public class LoginActivity extends Activity {
             jsonStr = jsonUtils.returnData(Constants.NAME_SPACE, Constants.METHOD_APP_LOGIN, Constants.WSDL, prtRequest, prtRequestPut);
             if (jsonStr.equals("err:账号或密码有误！")){ //err：账号或密码有误！
                 n=-1;
+                dialog.dismiss();
             }else if(jsonStr == "404" || jsonStr.equals("err:异常")) {
                 n=-2; //服务器响应异常
+                dialog.dismiss();
             }else if(jsonStr.equals("err:您一个小时内输入的帐号密码超过上限，请等待45分钟后再试!")) {
                 n=-3; //密码验证次数超过8次
+                dialog.dismiss();
             }else{
                 n=1;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
-           // dialog.dismiss();
+
         }
         return n;
     }

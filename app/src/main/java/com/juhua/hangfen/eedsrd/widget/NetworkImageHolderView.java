@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +22,12 @@ import android.widget.TextView;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.juhua.hangfen.eedsrd.R;
+import com.juhua.hangfen.eedsrd.activity.HomeActivity;
 import com.juhua.hangfen.eedsrd.activity.InfoActivity;
 import com.juhua.hangfen.eedsrd.activity.MainActivity;
+import com.juhua.hangfen.eedsrd.activity.WebActivity;
 import com.juhua.hangfen.eedsrd.model.BannerPicture;
+import com.juhua.hangfen.eedsrd.sharedpref.TinyDB;
 import com.juhua.hangfen.eedsrd.tools.AppManager;
 import com.juhua.hangfen.eedsrd.util.ScreenUtils;
 import com.juhua.hangfen.eedsrd.webservice.SSLConnection;
@@ -68,6 +73,11 @@ public class NetworkImageHolderView implements Holder<LinkedTreeMap<String, Stri
         textView.setTextColor(Color.WHITE);
         textView.setTextSize(14);
         textView.setGravity(Gravity.BOTTOM);
+        textView.setSingleLine(true);
+        textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        textView.setFocusable(true);
+        textView.setFocusableInTouchMode(true);
+        textView.setMarqueeRepeatLimit(-1);
         textView.setPadding(ScreenUtils.dip2px(8), ScreenUtils.dip2px(7), 0, ScreenUtils.dip2px(8));
         textView.setWidth(mRelativeLayout.getWidth());
         textView.setBackgroundResource(R.drawable.bg_gradient);
@@ -84,8 +94,11 @@ public class NetworkImageHolderView implements Holder<LinkedTreeMap<String, Stri
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AppManager.getAppManager().currentActivity(), InfoActivity.class);
-                intent.putExtra("id", pic.get("ID"));
+                Intent intent = new Intent(AppManager.getAppManager().currentActivity(), WebActivity.class);
+                if(AppManager.getAppManager().getUser() != null){
+                    intent.putExtra("Token", AppManager.getAppManager().getUser().getToken());
+                }
+                intent.putExtra("actionUrl", "People/ArticleDetail.aspx?id=" + pic.get("ID") + "&nav=show");
                 AppManager.getAppManager().currentActivity().startActivity(intent);
             }
         });

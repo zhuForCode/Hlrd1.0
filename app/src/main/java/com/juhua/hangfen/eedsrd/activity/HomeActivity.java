@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -101,19 +102,22 @@ public class HomeActivity  extends BaseActivity{
         backButtonRl.setVisibility(View.INVISIBLE);
         titleTv.setText(this.getResources().getString(R.string.home_title));
         token = getIntent().getExtras().getString("Token");
-
-        initImageLoader();
-        getLocalButton();
-        Object notifyObject = getIntent().getExtras().get("Notify");
-        if(notifyObject != null){
-            HashMap<String, Object> notifyMap = (HashMap<String, Object>) notifyObject;
-            GetData<String> seatData= (GetData<String>)notifyMap.get("GetSeatMap");
-            GetData<String> unreadNumData = (GetData<String>)notifyMap.get("GetUnReadMailCount");
-            GetData<String> bannerData = (GetData<String>)notifyMap.get("GetLBTList");
-            setBannerData(bannerData);
-            setNotify(seatData);
-            setUnReadMailNum(unreadNumData);
-        }else{
+        try {
+            initImageLoader();
+            getLocalButton();
+            Object notifyObject = getIntent().getExtras().get("Notify");
+            if(notifyObject != null){
+                HashMap<String, Object> notifyMap = (HashMap<String, Object>) notifyObject;
+                GetData<String> seatData= (GetData<String>)notifyMap.get("GetSeatMap");
+                GetData<String> unreadNumData = (GetData<String>)notifyMap.get("GetUnReadMailCount");
+                GetData<String> bannerData = (GetData<String>)notifyMap.get("GetLBTList");
+                setBannerData(bannerData);
+                setNotify(seatData);
+                setUnReadMailNum(unreadNumData);
+            }else{
+                setGridViewItemHeight(false);
+            }
+        }catch (Exception e){
             setGridViewItemHeight(false);
         }
     }
@@ -145,7 +149,7 @@ public class HomeActivity  extends BaseActivity{
         buttonLists.add(new HomeButton(0, "代表履职", "icon_m_job", "Duty/DutyMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "Proposal/ProposalMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(2, "代表之家", "icon_m_mqztc", "http://58.18.251.10:8083/dbllz/map.html?nav=show"));
-        buttonLists.add(new HomeButton(3, "人事任免", "ic_home_default", "People/ArticleList.aspx?SortId=70&nav=show"));
+        buttonLists.add(new HomeButton(3, "人事任免", "icon_m_hr", "People/ArticleList.aspx?SortId=70&nav=show"));
         buttonLists.add(new HomeButton(4, "履职参阅", "icon_m_zlk", "Duty/ConsultSort.aspx?nav=show"));
         buttonLists.add(new HomeButton(5, "交流互动", "icon_m_wljl", "Post/PostMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(6, "短信平台", "icon_m_mail", "Mailbox/MailList.aspx?nav=show"));
@@ -283,9 +287,11 @@ public class HomeActivity  extends BaseActivity{
             JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(result.getData(), JsonMessage.class);
             if(jsonMessage.isSuccess()){//服务器请求数据库成功与否
                 if(jsonMessage.getCode() == 200){
-                    notifyTv.setText(jsonMessage.getMessage());
+                    notifyTv.setText(Html.fromHtml(jsonMessage.getMessage()));
                     notifyLL.setVisibility(View.VISIBLE);
                     setGridViewItemHeight(true);
+                }else{
+                    setGridViewItemHeight(false);
                 }
             }else{
                 ToastUtils.show(jsonMessage.getMessage());
@@ -304,10 +310,14 @@ public class HomeActivity  extends BaseActivity{
                 gridView.post(new Runnable() {
                     @Override
                     public void run() {
-                        View itemView = gridView.getChildAt(6);
-                        mailBadge = (MaterialBadgeTextView) itemView.findViewById(R.id.unread_mail_badge);
-                        mailBadge.setBadgeCount(num);
-                        mailBadge.setVisibility(View.VISIBLE);
+                        try{
+                            View itemView = gridView.getChildAt(6);
+                            mailBadge = (MaterialBadgeTextView) itemView.findViewById(R.id.unread_mail_badge);
+                            mailBadge.setBadgeCount(num);
+                            mailBadge.setVisibility(View.VISIBLE);
+                        }catch (Exception e){
+
+                        }
                     }
                 });
 

@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Xml;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +138,9 @@ public class WebActivity extends BaseActivity {
     }
 
     protected  void bindControl(){
-        titleTv.setText(getIntent().getExtras().getString("actionName"));
+        if(getIntent().getExtras().getString("actionName") != null){
+            titleTv.setText(getIntent().getExtras().getString("actionName"));
+        }
         backButton.setOnClickListener(historyPageListener);
         loadURL();
         webView.setWebViewClient(new WebViewClient(){
@@ -166,7 +169,6 @@ public class WebActivity extends BaseActivity {
             @SuppressWarnings("deprecation")
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Log.d("kjj-2", failingUrl);
                 loadState = LoadStateEnum.LOAD_FAIL;
             }
 
@@ -174,7 +176,6 @@ public class WebActivity extends BaseActivity {
             @Override
             public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
                 onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
-                Log.d("kjj-2", req.getUrl().toString());
                 loadState = LoadStateEnum.LOAD_FAIL;
             }
             @Override
@@ -492,8 +493,9 @@ public class WebActivity extends BaseActivity {
                 }catch (Exception e){
                     intent.putExtra("actionUrl", u);
                 }
-
-                intent.putExtra("Token", getIntent().getExtras().getString("Token"));
+                if(getIntent().getExtras().getString("Token") != null){
+                    intent.putExtra("Token", getIntent().getExtras().getString("Token"));
+                }
                 startActivity(intent);
             }
 

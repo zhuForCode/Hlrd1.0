@@ -9,6 +9,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import com.juhua.hangfen.eedsrd.application.CrashHandler;
+import com.juhua.hangfen.eedsrd.model.User;
+import com.juhua.hangfen.eedsrd.sharedpref.Preferences;
+import com.juhua.hangfen.eedsrd.util.ToastUtils;
+
 /**
  * 应用程序Activity管理类：用于Activity管理和应用程序退出
  * @version 1.0
@@ -18,7 +23,9 @@ public class AppManager {
 
     private static Stack<Activity> activityStack;
     private static AppManager instance;
+    private User user;
 
+    private Context mContext;
     private AppManager(){}
     /**
      * 单一实例
@@ -28,6 +35,33 @@ public class AppManager {
             instance=new AppManager();
         }
         return instance;
+    }
+
+    public static void init(Context context) {
+        if (getContext() != null) {
+            return;
+        }
+        getAppManager().onInit(context);
+    }
+
+    public static Context getContext() {
+        return getAppManager().mContext;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    private void onInit(Context context) {
+        mContext = context.getApplicationContext();
+
+        ToastUtils.init(mContext);
+        Preferences.init(mContext);
+        CrashHandler.getInstance().init();
     }
     /**
      * 添加Activity到堆栈
@@ -90,11 +124,11 @@ public class AppManager {
         for (int i = 0; i < count; i++){
             if (null != activityStack.get(activityStack.size()-1-i)){
                 activityStack.get(activityStack.size()-1).finish();
-            //    Activity activity = activityStack.get(activityStack.size()-1-i);
+                //    Activity activity = activityStack.get(activityStack.size()-1-i);
                 activityStack.remove(activityStack.size()-1);
             }
         }
-       // activityStack.clear();
+        // activityStack.clear();
     }
     /**
      * 退出应用程序
@@ -107,4 +141,5 @@ public class AppManager {
             System.exit(0);
         } catch (Exception e) {	}
     }
+
 }
