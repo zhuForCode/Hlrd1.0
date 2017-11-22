@@ -9,7 +9,7 @@
         android:id="@+id/web" />
     <include
         android:id="@+id/ll_loading"
-        layout="@layout/include_loading"
+        layout="@layout/content_loading"
         android:visibility="gone" />
 
     <include

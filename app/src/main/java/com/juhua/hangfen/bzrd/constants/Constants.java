@@ -8,7 +8,7 @@ public interface Constants {
     short MODEL_TYPE_SINGLE = 0;//返回单条json字符串
     short MODEL_TYPE_LIST = 1;//返回多条json字符串
     short MODEL_TYPE_MULTIPLE = 2;//单条线程 同时访问多个webSevice接口
-    String VERIFY = "+afJ7yNqhDL67Hbo7ib9HQ==";
+    String VERIFY = "+afJ7yNqhDL67Hbo7ib9HQ==";//Get请求的话，+号要替换为%2B
     int REQUEST_TIMEOUT = 18000;
 
     String DOMAIN_NAME = "http://192.168.1.141/";

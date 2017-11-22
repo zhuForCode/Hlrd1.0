@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -35,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.juhua.hangfen.bzrd.R;
 import com.juhua.hangfen.bzrd.application.AppCache;
 import com.juhua.hangfen.bzrd.constants.Constants;
@@ -129,6 +132,12 @@ public class WebActivity extends BaseActivity {
     }
 
     protected  void bindControl(){
+        ImageView loadingView = (ImageView) llLoading.findViewById(R.id.gif_content_loading);
+        Glide.with(WebActivity.this)
+                .load(R.drawable.loading)
+                .asGif()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(loadingView);
         if(getIntent().getExtras().getString("actionName") != null){
             titleTv.setText(getIntent().getExtras().getString("actionName"));
         }
@@ -484,6 +493,16 @@ public class WebActivity extends BaseActivity {
                 }catch (Exception e){
                     intent.putExtra("actionUrl", u);
                 }
+                if(getIntent().getExtras().getString("Token") != null){
+                    intent.putExtra("Token", getIntent().getExtras().getString("Token"));
+                }
+                startActivity(intent);
+                return;
+            }
+
+            if(url.contains("nav=out")){//外部网站
+                Intent intent = new Intent(WebActivity.this, WebActivity.class);
+                intent.putExtra("actionUrl", url);
                 if(getIntent().getExtras().getString("Token") != null){
                     intent.putExtra("Token", getIntent().getExtras().getString("Token"));
                 }

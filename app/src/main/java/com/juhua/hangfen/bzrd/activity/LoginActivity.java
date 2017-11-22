@@ -600,10 +600,11 @@ public class LoginActivity extends Activity {
                 .addParams("userid", user.getId());
         SoapHelper bannerSoap = new SoapHelper()
                 .methodName("GetLBTList")
+                .setWsdl("http://dblz.sdbzrd.gov.cn/WebServers/AppSer.asmx")
                 .addParams("size", "5")
-                .addParams("verify", Constants.VERIFY);
+                .addParams("verify", "6BzclZSxilZt6bxanRj6nA==");
         soapHelperList.add(bannerSoap);
-        soapHelperList.add(seatingNotifySoap);
+     //   soapHelperList.add(seatingNotifySoap);
         soapHelperList.add(unReadMailNotifySoap);
         new SoapAsync(soapHelperList).setUI(new UpdateUI() {
             @Override

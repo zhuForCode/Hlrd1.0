@@ -57,8 +57,8 @@ public class CryptoTools {
         Date day=new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         CryptoTools tools = new CryptoTools();
-        System.out.println("加密:" + tools.encode("2014ZjrdVerify" + sdf.format(day)));
-        System.out.println("数据:" + "2014ZjrdVerify" + sdf.format(day));
+        System.out.println("加密:" + tools.encode("BZrdVerify"));
+        System.out.println("数据:" + "BZrdVerify");
         String a = new String(DESkey);
         String b = new String(DESIV);
         String aaa = "\n\u0014\u001E(2<FP";
@@ -92,7 +92,7 @@ public class CryptoTools {
         Date day=new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         CryptoTools tools = new CryptoTools();
-        System.out.println("加密:" + tools.encode("2014ZjrdVerify" + sdf.format(day)));
+        System.out.println("加密111:" + tools.encode("BZrdVerify"));
         verify = tools.encode("2014ZjrdVerify" + sdf.format(day));
         return verify;
 
