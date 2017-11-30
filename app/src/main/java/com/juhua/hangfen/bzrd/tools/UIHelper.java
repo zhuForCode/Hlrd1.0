@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.juhua.hangfen.bzrd.activity.LoginActivity;
+import com.juhua.hangfen.bzrd.application.AppManager;
 
 
 /**

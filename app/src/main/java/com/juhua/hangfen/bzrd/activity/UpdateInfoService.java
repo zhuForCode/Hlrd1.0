@@ -174,7 +174,7 @@ public class UpdateInfoService {
 
     void update() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(FileUtils.getDownloadDir(), "ZjrdWebApp.apk")),
+        intent.setDataAndType(Uri.fromFile(new File(FileUtils.getDownloadDir(), "app-bzrd.apk")),
                 "application/vnd.android.package-archive");
         context.startActivity(intent);
     }

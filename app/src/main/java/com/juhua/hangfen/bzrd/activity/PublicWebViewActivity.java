@@ -2,14 +2,14 @@ package com.juhua.hangfen.bzrd.activity;
 
 import android.view.KeyEvent;
 
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 
 
 /**
  * Created by JiaJin Kuai on 2017/1/21.
  */
 
-public class PublicWebViewActivity extends MainActivity{
+public class PublicWebViewActivity extends WebActivity{
     @Override
     public void loadURL(){
         try {

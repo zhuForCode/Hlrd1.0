@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#dc0000</color>
     <color name="colorAccent">#dc0000</color>
     <drawable name="transparent">#00000000</drawable>
+    <drawable name="half_transparent">#65000000</drawable>
     <color name="common_white">#ffffff</color>
     <color name="activity_background">#fbf9fe</color>
     <color name="common_white_shadow">#414141</color>
@@ -30,4 +31,14 @@
     <color name="griditems_bg">#ffe8ecef</color>
     <color name="common_black_shadow">#ff333333</color>
     <color name="line">#ffd3dde6</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGrey">#7a7a7a</color>
+    <color name="colorRed">#eb1010</color>
+    <color name="colorYellow">#f1d03b</color>
+    <color name="colorDark">#3d5562</color>
+    <color name="colorGreyShadow">#DCDCDC</color>
+    <color name="activityBackground">#e6e6e6</color>
+    <color name="activityBackgroundShadow">#fbf9fe</color>
 </resources>

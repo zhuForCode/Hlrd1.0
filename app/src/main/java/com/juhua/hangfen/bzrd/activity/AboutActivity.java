@@ -24,15 +24,22 @@ import android.widget.TextView;
 
 
 import com.juhua.hangfen.bzrd.R;
+import com.juhua.hangfen.bzrd.constants.Constants;
+import com.juhua.hangfen.bzrd.model.JsonMessage;
 import com.juhua.hangfen.bzrd.model.UpdateInfo;
 import com.juhua.hangfen.bzrd.tools.AppContext;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.tools.DataCleanManager;
 import com.juhua.hangfen.bzrd.tools.DialogUtil;
 import com.juhua.hangfen.bzrd.tools.UIHelper;
+import com.juhua.hangfen.bzrd.util.GsonUtil;
 import com.juhua.hangfen.bzrd.util.ToastUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
+
+import okhttp3.Call;
 
 /**
  * Created by kuai on 2017/1/3.
@@ -40,7 +47,7 @@ import java.io.File;
 
 public class AboutActivity extends Activity{
     AppContext appContext = new AppContext();
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = WebActivity.class.getSimpleName();
     private static final String APP_CACAHE_DIRNAME = "/webcache";
     // 更新版本要用到的一些信息
     private UpdateInfo info;
@@ -94,7 +101,7 @@ public class AboutActivity extends Activity{
             @Override
             public void onClick(View v) {
                 if (appContext.isNetworkConnected(AboutActivity.this)) {
-                    checkUpdate();
+                    checkVersion();
                 }else {
                     DialogUtil.showDialog(AboutActivity.this, "请检查网络连接！", true);
                 }
@@ -103,21 +110,15 @@ public class AboutActivity extends Activity{
         btnShare.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(){
-                    public  void run(){
-                        try {
-                            if (appContext.isNetworkConnected(AboutActivity.this)) {
-                                updateInfoService = new UpdateInfoService(AboutActivity.this);
-                                info = updateInfoService.getUpDateInfo();
-                                UIHelper.showShareMore(AboutActivity.this, getResources().getString(R.string.share_app), info.getUrl());
-                            }else {
-                                DialogUtil.showDialog(AboutActivity.this, "请检查网络连接！", true);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    };
-                }.start();
+                try {
+                    if (appContext.isNetworkConnected(AboutActivity.this)) {
+                        shareUrl();
+                    }else {
+                        DialogUtil.showDialog(AboutActivity.this, "请检查网络连接！", true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         btnClean.setOnClickListener(new OnClickListener() {
@@ -130,7 +131,106 @@ public class AboutActivity extends Activity{
             }
         });
     }
+    protected void checkVersion(){
+        dialog = ProgressDialog.show(AboutActivity.this, "", "正在检查更新...") ;
+        // 自动检查有没有新版本 如果有新版本就提示更新
+        OkHttpUtils
+                .post()
+                .url(Constants.ASHX_URL)
+                .addParams("method", "GetWebAppVersion")
+                .addParams("type", "Android")
+                .addParams("verify", Constants.VERIFY)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        dialog.dismiss();
+                        ToastUtils.show("检查更新失败：" + e.getMessage());
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {;
+                        dialog.dismiss();
+                        JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(response, JsonMessage.class);
+                        if(jsonMessage.isSuccess()){
+                            try {
+                                PackageManager packageManager = getPackageManager();
+                                PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+                                String value = GsonUtil.beanToJSONString(jsonMessage.getData());
+                                final UpdateInfo updateInfo = GsonUtil.parseJsonWithGson(value, UpdateInfo.class);
+                                String newVersion = updateInfo.getVersion();
+                                String currentVersion = packageInfo.versionName;
+                                if (newVersion.equals(currentVersion)) {
+                                    ToastUtils.show("当前已是最新版本！");
+                                } else{
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(AboutActivity.this);
+                                    dialog.setIcon(R.drawable.ic_cloud_download_black);
+                                    dialog.setTitle("请升级至最新版本" + updateInfo.getVersion());
+                                    dialog.setMessage(updateInfo.getDescription());
+                                    dialog.setPositiveButton(R.string.action_update, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            downloadNewApk(updateInfo.getUrl());
+                                        }
+                                    });
+                                    dialog.setNegativeButton(R.string.action_cancel, null);
+                                    dialog.create().show();
+                                }
+                            } catch (PackageManager.NameNotFoundException e) {
+                                ToastUtils.show("版本检测失败！");
+                            }
+                        }else{
+                            ToastUtils.show(jsonMessage.getMessage());
+                        }
+                    }
+                });
+
+    }
+
+    protected void downloadNewApk(String url){
+        ProgressDialog progressDialog = new ProgressDialog(AboutActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setIcon(getResources().getDrawable(R.drawable.ic_file_download));
+        progressDialog.setTitle("正在下载");
+        progressDialog.setMessage("请稍候...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+        new UpdateInfoService(this).downLoadFile(url, progressDialog, new Handler());
+
+    }
+
+    protected void shareUrl(){
+        dialog = ProgressDialog.show(AboutActivity.this, "", "准备分享中...") ;
+        // 自动检查有没有新版本 如果有新版本就提示更新
+        OkHttpUtils
+                .post()
+                .url(Constants.ASHX_URL)
+                .addParams("method", "GetWebAppVersion")
+                .addParams("type", "Android")
+                .addParams("verify", Constants.VERIFY)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        dialog.dismiss();
+                        ToastUtils.show("分享失败：" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {;
+                        dialog.dismiss();
+                        JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(response, JsonMessage.class);
+                        if(jsonMessage.isSuccess()){
+                            String value = GsonUtil.beanToJSONString(jsonMessage.getData());
+                            final UpdateInfo updateInfo = GsonUtil.parseJsonWithGson(value, UpdateInfo.class);
+                            UIHelper.showShareMore(AboutActivity.this, getResources().getString(R.string.share_app), updateInfo.getUrl());
+                        }else{
+                            ToastUtils.show(jsonMessage.getMessage());
+                        }
+                    }
+                });
+
+    }
     private void checkUpdate(){
         dialog = ProgressDialog.show(AboutActivity.this, "", "正在检查更新...") ;
         // 自动检查有没有新版本 如果有新版本就提示更新

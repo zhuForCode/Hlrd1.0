@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.juhua.hangfen.bzrd.R;
 import com.juhua.hangfen.bzrd.constants.Constants;
 import com.juhua.hangfen.bzrd.model.GetData;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.tools.JsonUtils;
 import com.juhua.hangfen.bzrd.util.GsonUtil;
 import com.juhua.hangfen.bzrd.util.ToastUtils;

@@ -33,4 +33,8 @@ public class GsonUtil {
         return result;
 
     }
+
+    public static String beanToJSONString(Object bean) {
+        return new Gson().toJson(bean);
+    }
 }

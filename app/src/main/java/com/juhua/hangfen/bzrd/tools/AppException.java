@@ -17,6 +17,8 @@ import android.content.pm.PackageInfo;
 import android.os.Environment;
 import android.os.Looper;
 
+import com.juhua.hangfen.bzrd.application.AppManager;
+
 /**
  * 应用程序异常类：用于捕获异常和提示错误信息
  * @version 1.0

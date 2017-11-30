@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.juhua.hangfen.bzrd.R;
 import com.juhua.hangfen.bzrd.model.User;
 import com.juhua.hangfen.bzrd.sharedpref.TinyDB;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.widget.SingleLinePreference;
 
 /**

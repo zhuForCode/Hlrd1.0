@@ -1,23 +1,32 @@
 package com.juhua.hangfen.bzrd.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.juhua.hangfen.bzrd.R;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.constants.Constants;
 import com.juhua.hangfen.bzrd.model.GetData;
+import com.juhua.hangfen.bzrd.model.JsonMessage;
 import com.juhua.hangfen.bzrd.model.User;
 import com.juhua.hangfen.bzrd.sharedpref.TinyDB;
+import com.juhua.hangfen.bzrd.util.GsonUtil;
 import com.juhua.hangfen.bzrd.util.ToastUtils;
 import com.juhua.hangfen.bzrd.webservice.SoapAsync;
 import com.juhua.hangfen.bzrd.webservice.SoapHelper;
 import com.juhua.hangfen.bzrd.webservice.UpdateUI;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.HashMap;
+
+import okhttp3.Call;
 
 /**
  * Created by congj on 2017/10/15.
@@ -60,27 +69,30 @@ public class ModifyPasswordActivity extends BaseActivity {
                     mLoading = ProgressDialog.show(ModifyPasswordActivity.this, "", "修改中");
                     TinyDB userDB = new TinyDB(ModifyPasswordActivity.this);
                     User user = (User) userDB.getObject("user", User.class);
-                    SoapHelper soapHelper = new SoapHelper()
-                            .methodName("UpdatePassWord")
+                    OkHttpUtils
+                            .post()
+                            .url(Constants.ASHX_URL)
+                            .addParams("method", "UpdatePassWord")
                             .addParams("userid", user.getId())
                             .addParams("Password", mAgainEdt.getText().toString())
                             .addParams("oldpassword", mOriginalEdt.getText().toString())
-                            .addParams("UserName", user.getName())
-                            .addParams("verify", Constants.VERIFY);
-                    new SoapAsync(soapHelper).setUI(new UpdateUI() {
-                        @SuppressWarnings("unchecked")
-                        @Override
-                        public void onResponse(Object obj) {
-                            HashMap<String, Object> resultObj = (HashMap<String, Object>) obj;
-                            GetData<String> result =(GetData<String>) resultObj.get("UpdatePassWord");
-                            if(result.isSuccess()){
-                                mLoading.dismiss();
-                                ToastUtils.show(result.getData());
-                            }else{
-                                ToastUtils.show(result.getErrorDesc());
-                            }
-                        }
-                    }).execute();
+                            .addParams("UserName", user.getAccount())
+                            .addParams("verify", Constants.VERIFY)
+                            .build()
+                            .execute(new StringCallback() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    mLoading.dismiss();
+                                    ToastUtils.show("网络连接似乎有点问题。");
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    mLoading.dismiss();
+                                    JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(response, JsonMessage.class);
+                                    ToastUtils.show(jsonMessage.getMessage());
+                                }
+                            });
                 }
             }
         });

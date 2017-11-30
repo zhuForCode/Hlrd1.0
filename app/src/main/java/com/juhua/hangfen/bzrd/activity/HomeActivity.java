@@ -23,7 +23,7 @@ import com.juhua.hangfen.bzrd.model.BannerPicture;
 import com.juhua.hangfen.bzrd.model.GetData;
 import com.juhua.hangfen.bzrd.model.HomeButton;
 import com.juhua.hangfen.bzrd.model.JsonMessage;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.util.AsyncUtil;
 import com.juhua.hangfen.bzrd.util.GsonUtil;
 import com.juhua.hangfen.bzrd.util.ImageUtils;
@@ -84,23 +84,19 @@ public class HomeActivity  extends BaseActivity{
     protected  void bindControl(){
         backButtonRl.setVisibility(View.INVISIBLE);
         titleTv.setText(this.getResources().getString(R.string.home_title));
-        token = getIntent().getExtras().getString("Token");
+        token = AppManager.getAppManager().getUser().getToken();
         try {
             initImageLoader();
             getLocalButton();
-            Object notifyObject = getIntent().getExtras().get("Notify");
-            if(notifyObject != null){
-                HashMap<String, Object> notifyMap = (HashMap<String, Object>) notifyObject;
-             //   GetData<String> seatData= (GetData<String>)notifyMap.get("GetSeatMap");
-                GetData<String> unreadNumData = (GetData<String>)notifyMap.get("GetUnReadMailCount");
-                GetData<String> bannerData = (GetData<String>)notifyMap.get("GetLBTList");
-                setBannerData(bannerData);
-            //    setNotify(seatData);
-                setGridViewItemHeight(false);
-                setUnReadMailNum(unreadNumData);
-            }else{
-                setGridViewItemHeight(false);
+            JsonMessage banners = (JsonMessage) getIntent().getExtras().get("getBannerList");
+            JsonMessage unread = (JsonMessage) getIntent().getExtras().get("getUnReadMailCount");
+            if(banners != null ){
+                setBannerData(banners);
             }
+            if (unread != null){
+                setUnReadMailNum(unread);
+            }
+            setGridViewItemHeight(false);
         }catch (Exception e){
             setGridViewItemHeight(false);
         }
@@ -119,12 +115,13 @@ public class HomeActivity  extends BaseActivity{
                 .setCanLoop(true);
     }
 
-    private  void setBannerData(GetData<String> result){
-        if(result.isSuccess()){
-            bannerLists = GsonUtil.parseJsonArrayWithGson("[" + result.getData() + "]", BannerPicture.class);
+    private  void setBannerData(JsonMessage jsonMessage){
+        if(jsonMessage.isSuccess()){
+            String value = GsonUtil.beanToJSONString(jsonMessage.getData());
+            bannerLists = GsonUtil.parseJsonArrayWithGson(value, BannerPicture.class);
             setHomeBanner();
         }else{
-            ToastUtils.show(result.getErrorDesc());
+            ToastUtils.show(jsonMessage.getMessage());
         }
     }
 
@@ -237,7 +234,7 @@ public class HomeActivity  extends BaseActivity{
                             intent.putExtra("actionName", buttonLists.get(i).getName());
                             startActivity(intent);
                         }else{
-                            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                            Intent intent = new Intent(HomeActivity.this, WebActivity.class);
                             intent.putExtra("Token", token);
                             intent.putExtra("actionUrl", buttonLists.get(i).getActionUrl());
                             startActivity(intent);
@@ -286,26 +283,23 @@ public class HomeActivity  extends BaseActivity{
             setGridViewItemHeight(false);
         }
     }
-    private void setUnReadMailNum(GetData<String> result){
-        if(result.isSuccess()){//设备请求服务器成功与否
-            JsonMessage jsonMessage = GsonUtil.parseJsonWithGson(result.getData(), JsonMessage.class);
-            if(jsonMessage.isSuccess()){//服务器请求数据库成功与否
-                final int num = Integer.parseInt(jsonMessage.getMessage());
-                gridView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            View itemView = gridView.getChildAt(6);
-                            mailBadge = (MaterialBadgeTextView) itemView.findViewById(R.id.unread_mail_badge);
-                            mailBadge.setBadgeCount(num);
-                            mailBadge.setVisibility(View.VISIBLE);
-                        }catch (Exception e){
+    private void setUnReadMailNum(JsonMessage jsonMessage){
+        if(jsonMessage.isSuccess()){//服务器请求数据库成功与否
+            final int num = Integer.parseInt(jsonMessage.getMessage());
+            gridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        View itemView = gridView.getChildAt(6);
+                        mailBadge = (MaterialBadgeTextView) itemView.findViewById(R.id.unread_mail_badge);
+                        mailBadge.setBadgeCount(num);
+                        mailBadge.setVisibility(View.VISIBLE);
+                    }catch (Exception e){
 
-                        }
                     }
-                });
+                }
+            });
 
-            }
         }
     }
 

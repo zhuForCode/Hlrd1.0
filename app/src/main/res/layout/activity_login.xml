@@ -7,128 +7,173 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_width="fill_parent"
-        android:layout_height="50dip"
-        android:background="@drawable/layout_border"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="12dp"
-        >
-        <ImageView
-            android:layout_width="25dip"
-            android:layout_height="22dip"
-            android:src="@drawable/more_userinfo"
-            android:paddingRight="5dip"
-            android:layout_marginLeft="5dip"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="40dp"
-            android:hint="@string/placeholder_enter_account"
-            android:singleLine="true"
-            style="@style/editText"
-            android:imeOptions="actionNext"
-            android:nextFocusForward="@+id/passWord_editText"
-            android:id="@+id/userName_editText" />
-        <Button
-            android:id="@+id/button_clear"
-            android:layout_width="20dip"
-            android:layout_height="20dip"
-            android:background="@drawable/ic_delete"
-            android:visibility="invisible"
-            android:layout_marginRight="8dip" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_width="fill_parent"
-        android:layout_height="50dip"
-        android:background="@drawable/layout_border"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="5dip">
-        <ImageView
-            android:layout_width="25dip"
-            android:layout_height="22dip"
-            android:src="@drawable/more_modify_password"
-            android:paddingRight="1dip"
-            android:layout_marginLeft="5dip"/>
-        <EditText
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            style="@style/editText"
-            android:inputType="textPassword"
-            android:singleLine="true"
-            android:hint="@string/placehholder_enter_pwd"
-            android:imeOptions="actionDone"
-            android:id="@+id/passWord_editText" />
-        <Button
-            android:id="@+id/button_clear1"
-            android:layout_width="20dip"
-            android:layout_height="20dip"
-            android:background="@drawable/ic_delete"
-            android:visibility="invisible"
-            android:layout_marginRight="8dip" />
-    </LinearLayout>
-    <Button
-        android:id="@+id/sign_in_button"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:id="@+id/llayout_progress"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/dfbutton_bg"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:background="@drawable/half_transparent"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/progress_login"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/txt_progress_login"
+            android:textAlignment="center"
+            android:layout_marginEnd="80dp"
+            android:textSize="20sp"
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginStart="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:text="@string/progress_login"/>
+    </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp">
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/rem_checkBox"
-            android:layout_marginLeft="30dp"
-            android:layout_marginBottom="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/MyCheckBox"/>
-        <TextView
-            android:id="@+id/textView"
-            android:layout_marginBottom="60dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="@string/btn_remember_pwd"
-            android:textColor="@color/common_white" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="60dp" />
+        android:id="@+id/llayout_form"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:background="@drawable/layout_text_input"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="12dp"
+            >
+            <ImageView
+                android:layout_width="25dip"
+                android:layout_height="22dip"
+                android:src="@drawable/ic_account_circle"
+                android:layout_marginLeft="5dip"
+                android:contentDescription="@string/tip_image_icon"
+                android:layout_marginStart="5dip"/>
+            <EditText
+                android:id="@+id/edt_login_account"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:hint="@string/placeholder_login_account"
+                android:singleLine="true"
+                android:background="@color/colorWhite"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/edt_login_password" />
+            <Button
+                android:id="@+id/btn_account_clear"
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:background="@drawable/ic_cancel"
+                android:visibility="invisible"
+                android:layout_marginRight="8dip"
+                android:layout_marginEnd="8dip"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:background="@drawable/layout_text_input"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="5dip">
+            <ImageView
+                android:layout_width="25dip"
+                android:layout_height="22dip"
+                android:src="@drawable/ic_lock_outline"
+                android:contentDescription="@string/tip_image_icon"
+                android:layout_marginLeft="5dip"
+                android:layout_marginStart="5dip"/>
+            <EditText
+                android:id="@+id/edt_login_password"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_height="40dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@color/colorWhite"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:hint="@string/placeholder_login_password"
+                android:imeOptions="actionDone" />
+            <Button
+                android:id="@+id/btn_password_clear"
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:background="@drawable/ic_cancel"
+                android:visibility="invisible"
+                android:layout_marginRight="8dip"
+                android:layout_marginEnd="8dip"/>
+        </LinearLayout>
         <Button
-            android:id="@+id/forgetPwd_Btn"
-            android:layout_marginBottom="25dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/common_white"
+            android:id="@+id/btn_login"
+            android:text="@string/btn_login"
+            android:textColor="@color/colorWhite"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorYellow"
+            android:textStyle="bold" />
 
-            android:text="@string/btn_forget_pwd"
-            android:layout_marginRight="30dp"
-            android:layout_toRightOf="@id/rem_checkBox"
-            style="@android:style/Widget.DeviceDefault.Button.Borderless" />
+        <LinearLayout
+            android:orientation="horizontal"
 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/chk_login_remember"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/MyCheckBox" />
+            <TextView
+                android:id="@+id/txt_login_remember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_login_remember"
+                android:textColor="@color/colorWhite" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp" />
+            <Button
+                android:id="@+id/btn_login_forget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+
+                android:text="@string/btn_login_forget"
+                android:layout_marginRight="40dp"
+                android:layout_marginEnd="40dp"
+                style="@android:style/Widget.DeviceDefault.Button.Borderless" />
+
+
+        </LinearLayout>
 
     </LinearLayout>
+
+
 
 </LinearLayout>

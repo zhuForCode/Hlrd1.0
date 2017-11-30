@@ -23,7 +23,6 @@
         <activity android:name="com.juhua.hangfen.bzrd.activity.LoginActivity"/>
         <activity android:name="com.juhua.hangfen.bzrd.activity.HomeActivity" />
         <activity android:name="com.juhua.hangfen.bzrd.activity.InfoActivity"/>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.MainActivity" />
         <activity android:name="com.juhua.hangfen.bzrd.activity.WebActivity"/>
         <activity android:name="com.juhua.hangfen.bzrd.activity.AboutActivity" />
         <activity android:name="com.juhua.hangfen.bzrd.activity.PersonActivity"/>

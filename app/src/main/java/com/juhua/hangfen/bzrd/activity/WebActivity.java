@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -39,11 +38,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.juhua.hangfen.bzrd.R;
-import com.juhua.hangfen.bzrd.application.AppCache;
 import com.juhua.hangfen.bzrd.constants.Constants;
 import com.juhua.hangfen.bzrd.enums.LoadStateEnum;
 import com.juhua.hangfen.bzrd.model.Nav;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.tools.FileUtils;
 import com.juhua.hangfen.bzrd.util.DownloadUtil;
 import com.juhua.hangfen.bzrd.util.GsonUtil;
@@ -259,7 +257,6 @@ public class WebActivity extends BaseActivity {
                     startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
                 }catch (Exception e){
                     ToastUtils.show("未安装相关程序");
-                    // Toast.makeText(MainActivity.this, "未安装相关程序", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
@@ -438,14 +435,14 @@ public class WebActivity extends BaseActivity {
 
         @JavascriptInterface
         public void toLogin(){//退回到登陆页面
-            AppCache.clearStack();
-            Intent intent = new Intent(AppCache.getContext(), LoginActivity.class);
+            AppManager.getAppManager().finishAllActivity();
+            Intent intent = new Intent(AppManager.getContext(), LoginActivity.class);
             startActivity(intent);
 
         }
         @JavascriptInterface
         public void tokenOut(){//退回到登陆页面
-            AlertDialog.Builder builder = new AlertDialog.Builder(AppCache.getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(AppManager.getContext());
             builder.setIcon(getResources().getDrawable(R.drawable.ic_error_outline_black));
             builder.setTitle("用户信息已过期！");
             builder.setMessage("请重新登陆！可能的原因：\n1.用户半小时内无有效操作\n2.账号在其他手机上被登陆\n3.服务器升级维护");
@@ -453,7 +450,7 @@ public class WebActivity extends BaseActivity {
             builder.setPositiveButton("重新登陆", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    AppCache.clearStack();
+                    AppManager.getAppManager().finishAllActivity();
                     Intent intent = new Intent(WebActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }

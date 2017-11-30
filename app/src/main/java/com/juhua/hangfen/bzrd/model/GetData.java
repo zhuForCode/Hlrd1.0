@@ -1,5 +1,6 @@
 package com.juhua.hangfen.bzrd.model;
 
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.application.ThisApplication;
 import com.juhua.hangfen.bzrd.tools.NetworkUtils;
 
@@ -19,7 +20,7 @@ public class GetData<T>  implements Serializable {
         this.setSuccess(true);
         this.setErrorCode(400);
         this.setErrorDesc("未知错误！");
-        if(!NetworkUtils.isNetworkAvailable(ThisApplication.getContext())){
+        if(!NetworkUtils.isNetworkAvailable(AppManager.getContext())){
             this.setSuccess(false);
             this.setErrorDesc("您似乎已经断开网络！");
             this.setErrorCode(401);

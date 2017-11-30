@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.juhua.hangfen.bzrd.R;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.application.ThisApplication;
 import com.juhua.hangfen.bzrd.util.ImageUtils;
 
@@ -23,7 +24,7 @@ public class HomeButton {
         this.name = name;
         this.iconUrl = iconUrl;
         this.actionUrl = actionUrl;
-        this.iconImage = ImageUtils.drawableToBitmap(ThisApplication.getContext().getResources().getDrawable(ImageUtils.getResourceByReflect(iconUrl)));
+        this.iconImage = ImageUtils.drawableToBitmap(AppManager.getContext().getResources().getDrawable(ImageUtils.getResourceByReflect(iconUrl)));
 
 
     }
@@ -32,7 +33,7 @@ public class HomeButton {
         this.iconUrl = iconUrl;
         this.actionUrl = actionUrl;
 
-        this.iconImage = ImageUtils.drawableToBitmap(ThisApplication.getContext().getResources().getDrawable(R.drawable.ic_home_default));
+        this.iconImage = ImageUtils.drawableToBitmap(AppManager.getContext().getResources().getDrawable(R.drawable.ic_home_default));
 
         this.iconImage = ImageUtils.resizeBitmap(this.iconImage, 150, 150);
 

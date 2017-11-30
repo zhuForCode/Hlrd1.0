@@ -1,10 +1,12 @@
 package com.juhua.hangfen.bzrd.model;
 
+import java.io.Serializable;
+
 /**
  * Created by JiaJin Kuai on 2017/4/7.
  */
 
-public class User {
+public class User implements Serializable {
     private String id;
     private String name;
     private String account;

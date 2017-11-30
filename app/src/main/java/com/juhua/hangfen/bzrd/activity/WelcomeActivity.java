@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.juhua.hangfen.bzrd.R;
-import com.juhua.hangfen.bzrd.application.AppCache;
 import com.juhua.hangfen.bzrd.constants.Constants;
 import com.juhua.hangfen.bzrd.model.User;
 import com.juhua.hangfen.bzrd.model.VersionInfo;
@@ -80,7 +79,7 @@ public class WelcomeActivity extends Activity {
                         LinkedHashMap linkedHashMap = (LinkedHashMap) obj;
                         User user = (User) linkedHashMap.get("User");
                         VersionInfo versionInfo = (VersionInfo) linkedHashMap.get("VersionInfo");
-                        TinyDB infoDB = new TinyDB(AppCache.getContext());
+                        TinyDB infoDB = new TinyDB(WelcomeActivity.this);
                         infoDB.putObject("User", user);
                         infoDB.putObject("VersionInfo", versionInfo);
                         ToastUtils.show(user.getName() + ":" + versionInfo.getDescription());

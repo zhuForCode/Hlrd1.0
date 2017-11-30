@@ -19,7 +19,7 @@ import com.bigkoo.convenientbanner.holder.Holder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.juhua.hangfen.bzrd.R;
 import com.juhua.hangfen.bzrd.activity.WebActivity;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.util.ScreenUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

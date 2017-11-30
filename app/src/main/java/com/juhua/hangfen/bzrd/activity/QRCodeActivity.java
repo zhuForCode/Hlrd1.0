@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.juhua.hangfen.bzrd.R;
-import com.juhua.hangfen.bzrd.tools.AppManager;
+import com.juhua.hangfen.bzrd.application.AppManager;
 
 /**
  * Created by JiaJin Kuai on 2017/2/19.

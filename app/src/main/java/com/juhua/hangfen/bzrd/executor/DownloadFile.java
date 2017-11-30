@@ -10,8 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.webkit.MimeTypeMap;
 
 import com.juhua.hangfen.bzrd.R;
-import com.juhua.hangfen.bzrd.application.AppCache;
 import com.juhua.hangfen.bzrd.sharedpref.Preferences;
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.util.FileUtils;
 import com.juhua.hangfen.bzrd.util.NetworkUtils;
 
@@ -71,7 +71,7 @@ public abstract class DownloadFile implements IExecutor<Void>{
         request.allowScanningByMediaScanner();
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setAllowedOverRoaming(false);// 不允许漫游
-        DownloadManager downloadManager = (DownloadManager) AppCache.getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager downloadManager = (DownloadManager) AppManager.getContext().getSystemService(Context.DOWNLOAD_SERVICE);
         return downloadManager.enqueue(request);
     }
 }

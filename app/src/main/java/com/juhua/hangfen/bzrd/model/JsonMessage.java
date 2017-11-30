@@ -1,14 +1,16 @@
 package com.juhua.hangfen.bzrd.model;
 
+import java.io.Serializable;
+
 /**
  * Created by congj on 2017/10/17.
  */
 
-public class JsonMessage<T> {
+public class JsonMessage<T>  implements Serializable {
     private int code;
     private String message;
     private boolean success;
-    private T Data;
+    private T data;
 
     public int getCode() {
         return code;
@@ -35,10 +37,10 @@ public class JsonMessage<T> {
     }
 
     public T getData() {
-        return Data;
+        return data;
     }
 
     public void setData(T data) {
-        Data = data;
+        this.data = data;
     }
 }

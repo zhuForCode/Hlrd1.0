@@ -1,15 +1,15 @@
-package com.juhua.hangfen.bzrd.tools;
+package com.juhua.hangfen.bzrd.application;
 
 /**
- * Created by JiaJin Kuai on 2016/9/29.
+ * Created by congj on 2017/11/22.
  */
+
 import java.util.Stack;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 
-import com.juhua.hangfen.bzrd.application.CrashHandler;
 import com.juhua.hangfen.bzrd.model.User;
 import com.juhua.hangfen.bzrd.sharedpref.Preferences;
 import com.juhua.hangfen.bzrd.util.ToastUtils;
@@ -141,5 +141,4 @@ public class AppManager {
             System.exit(0);
         } catch (Exception e) {	}
     }
-
 }

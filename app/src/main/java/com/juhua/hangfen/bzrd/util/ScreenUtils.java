@@ -6,6 +6,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.ViewConfiguration;
 
+import com.juhua.hangfen.bzrd.application.AppManager;
 import com.juhua.hangfen.bzrd.application.ThisApplication;
 
 import java.lang.reflect.Method;
@@ -15,13 +16,13 @@ import java.lang.reflect.Method;
  */
 
 public class ScreenUtils {
-    public static int Width = ThisApplication.getContext().getResources().getDisplayMetrics().widthPixels;
-    public static int Height = ThisApplication.getContext().getResources().getDisplayMetrics().heightPixels;
+    public static int Width = AppManager.getContext().getResources().getDisplayMetrics().widthPixels;
+    public static int Height = AppManager.getContext().getResources().getDisplayMetrics().heightPixels;
     //获取虚拟按键的高度
     public static int getNavigationBarHeight() {
         int result = 0;
         if (hasNavBar()) {
-            Resources res = ThisApplication.getContext().getResources();
+            Resources res = AppManager.getContext().getResources();
             int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 result = res.getDimensionPixelSize(resourceId);
@@ -35,10 +36,10 @@ public class ScreenUtils {
     public static int getStatusBarHeight() {
         int statusBarHeight = -1;
 //获取status_bar_height资源的ID
-        int resourceId = ThisApplication.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = AppManager.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             //根据资源ID获取响应的尺寸值
-            statusBarHeight = ThisApplication.getContext().getResources().getDimensionPixelSize(resourceId);
+            statusBarHeight = AppManager.getContext().getResources().getDimensionPixelSize(resourceId);
         }
 
         return statusBarHeight;
@@ -49,7 +50,7 @@ public class ScreenUtils {
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static boolean hasNavBar() {
-        Resources res = ThisApplication.getContext().getResources();
+        Resources res = AppManager.getContext().getResources();
         int resourceId = res.getIdentifier("config_showNavigationBar", "bool", "android");
         if (resourceId != 0) {
             boolean hasNav = res.getBoolean(resourceId);
@@ -62,7 +63,7 @@ public class ScreenUtils {
             }
             return hasNav;
         } else { // fallback
-            return !ViewConfiguration.get(ThisApplication.getContext()).hasPermanentMenuKey();
+            return !ViewConfiguration.get(AppManager.getContext()).hasPermanentMenuKey();
         }
     }
 
@@ -89,7 +90,7 @@ public class ScreenUtils {
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
     public static int dip2px(float dpValue) {
-        final float scale = ThisApplication.getContext().getResources().getDisplayMetrics().density;
+        final float scale = AppManager.getContext().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
@@ -97,7 +98,7 @@ public class ScreenUtils {
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
     public static int px2dip(float pxValue) {
-        final float scale = ThisApplication.getContext().getResources().getDisplayMetrics().density;
+        final float scale = AppManager.getContext().getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 }
