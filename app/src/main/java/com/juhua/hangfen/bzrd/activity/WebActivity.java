@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
@@ -30,6 +31,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -325,7 +327,31 @@ public class WebActivity extends BaseActivity {
                 dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.common_dark_shadow));
                 return true;
             }
-
+            //设置响应js 的Prompt()函数
+            @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
+                final View v = View.inflate(WebActivity.this, R.layout.prompt_dialog, null);
+                ((TextView) v.findViewById(R.id.prompt_message_text)).setText(message);
+                ((EditText) v.findViewById(R.id.prompt_input_field)).setText(defaultValue);
+                AlertDialog.Builder b = new AlertDialog.Builder(WebActivity.this);
+                b.setTitle("提示");
+                b.setView(v);
+                b.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String value = ((EditText) v.findViewById(R.id.prompt_input_field)).getText().toString();
+                        result.confirm(value);
+                    }
+                });
+                b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        result.cancel();
+                    }
+                });
+                b.create().show();
+                return true;
+            }
         });
 
         webView.setOnLongClickListener(new View.OnLongClickListener() {

@@ -129,10 +129,10 @@ public class HomeActivity  extends BaseActivity{
         buttonLists = new ArrayList<HomeButton>();
         buttonLists.add(new HomeButton(0, "代表履职", "icon_m_job", "Duty/DutyMenu.aspx?nav=show"));
         buttonLists.add(new HomeButton(1, "议案建议", "icon_m_yajy", "Proposal/ProposalMenu.aspx?nav=show"));
-        buttonLists.add(new HomeButton(2, "政务信息", "icon_m_mqztc", "Duty/GovInfoMenu.aspx?nav=show"));
-        buttonLists.add(new HomeButton(3, "人事任免", "icon_m_hr", "People/ArticleList.aspx?SortId=70&nav=show"));
+        buttonLists.add(new HomeButton(2, "工作信息", "icon_m_mqztc", "Duty/GovInfoMenu.aspx?nav=show"));
+        buttonLists.add(new HomeButton(3, "人事任免", "icon_m_hr", "http://www.sdbzrd.gov.cn/rdww/24/xjrm.html"));
         buttonLists.add(new HomeButton(4, "在线学习", "icon_m_zlk", "Duty/ConsultSort.aspx?nav=show"));
-        buttonLists.add(new HomeButton(5, "电子文档", "icon_m_filerecv", "Duty/CongressFileSort.aspx?nav=show"));
+        buttonLists.add(new HomeButton(5, "会议资料", "icon_m_filerecv", "Duty/CongressFileSort.aspx?nav=show"));
         buttonLists.add(new HomeButton(6, "我的邮箱", "icon_m_mail", "Mailbox/MailList.aspx?nav=show"));
         buttonLists.add(new HomeButton(7, "代表数据库", "icon_m_myplatform", "People/Database.aspx?nav=show"));
         buttonLists.add(new HomeButton(8, "个人中心", "icon_m_grzx", "mypersonalcenterB.html"));

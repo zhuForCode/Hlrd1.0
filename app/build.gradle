@@ -7,7 +7,7 @@ android {
         applicationId "com.juhua.hangfen.bzrd"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 6
+        versionCode 8
         versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
