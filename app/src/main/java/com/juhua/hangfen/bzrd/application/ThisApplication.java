@@ -22,9 +22,9 @@ public class ThisApplication extends Application {
         AppManager.init(this);
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+                .connectTimeout(60000L, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
-                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .readTimeout(60000L, TimeUnit.MILLISECONDS)
                 //其他配置
                 .build();
 
