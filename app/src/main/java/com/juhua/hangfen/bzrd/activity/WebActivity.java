@@ -44,6 +44,8 @@ import com.juhua.hangfen.bzrd.constants.Constants;
 import com.juhua.hangfen.bzrd.enums.LoadStateEnum;
 import com.juhua.hangfen.bzrd.model.Nav;
 import com.juhua.hangfen.bzrd.application.AppManager;
+import com.juhua.hangfen.bzrd.model.User;
+import com.juhua.hangfen.bzrd.sharedpref.TinyDB;
 import com.juhua.hangfen.bzrd.tools.FileUtils;
 import com.juhua.hangfen.bzrd.util.DownloadUtil;
 import com.juhua.hangfen.bzrd.util.GsonUtil;
@@ -371,6 +373,7 @@ public class WebActivity extends BaseActivity {
                 builder.append(getIntent().getExtras().getString("Token"));
                 builder.append("&actionUrl=");
                 builder.append(getIntent().getExtras().getString("actionUrl"));
+
                 if(getIntent().getExtras().getString("actionUrl").contains("http://")){
                     webView.loadUrl(getIntent().getExtras().getString("actionUrl"));
                     WebSettings settings = webView.getSettings();
@@ -381,6 +384,10 @@ public class WebActivity extends BaseActivity {
                     settings.setLoadWithOverviewMode(true);
                     settings.setUseWideViewPort(true);//关键点
                 }else{
+                    builder.append("&roleId=");
+                    TinyDB tinyDB = new TinyDB(this);
+                    User user = (User) tinyDB.getObject("user", User.class);
+                    builder.append(user.getRoleId());
                     webView.loadUrl(builder.toString());
                 }
             }

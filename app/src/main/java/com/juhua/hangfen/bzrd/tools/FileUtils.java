@@ -577,7 +577,7 @@ public class FileUtils
     }
 
     private static String getAppDir() {
-        return Environment.getExternalStorageDirectory() + "/EEDSRD";
+        return Environment.getExternalStorageDirectory() + "/BZRD";
     }
 
     public static String getDownloadDir() {

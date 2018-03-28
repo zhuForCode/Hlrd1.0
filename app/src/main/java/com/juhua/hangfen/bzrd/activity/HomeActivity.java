@@ -1,5 +1,7 @@
 package com.juhua.hangfen.bzrd.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -9,21 +11,29 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
 import com.juhua.hangfen.bzrd.R;
 import com.juhua.hangfen.bzrd.adapter.HomeButtonAdapter;
+import com.juhua.hangfen.bzrd.adapter.RoleAdapter;
 import com.juhua.hangfen.bzrd.constants.Constants;
 import com.juhua.hangfen.bzrd.model.BannerPicture;
 import com.juhua.hangfen.bzrd.model.GetData;
 import com.juhua.hangfen.bzrd.model.HomeButton;
 import com.juhua.hangfen.bzrd.model.JsonMessage;
 import com.juhua.hangfen.bzrd.application.AppManager;
+import com.juhua.hangfen.bzrd.model.User;
+import com.juhua.hangfen.bzrd.sharedpref.TinyDB;
 import com.juhua.hangfen.bzrd.util.AsyncUtil;
 import com.juhua.hangfen.bzrd.util.GsonUtil;
 import com.juhua.hangfen.bzrd.util.ImageUtils;
@@ -42,6 +52,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,11 +101,15 @@ public class HomeActivity  extends BaseActivity{
             getLocalButton();
             JsonMessage banners = (JsonMessage) getIntent().getExtras().get("getBannerList");
             JsonMessage unread = (JsonMessage) getIntent().getExtras().get("getUnReadMailCount");
+            JsonMessage roles = (JsonMessage) getIntent().getExtras().get("getRolesList");
             if(banners != null ){
                 setBannerData(banners);
             }
             if (unread != null){
                 setUnReadMailNum(unread);
+            }
+            if(roles != null){
+                setRolesList(roles);
             }
             setGridViewItemHeight(false);
         }catch (Exception e){
@@ -302,7 +317,15 @@ public class HomeActivity  extends BaseActivity{
 
         }
     }
+    private void setRolesList(JsonMessage jsonMessage){
+        if(jsonMessage.isSuccess()){
+            String value = GsonUtil.beanToJSONString(jsonMessage.getData());
+            ShowRolesList(value);
 
+        }else{
+            ToastUtils.show("身份信息获取失败！");
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -318,5 +341,44 @@ public class HomeActivity  extends BaseActivity{
         }
         return true;
         //   return super.onKeyDown(keyCode, event);
+    }
+
+    private void ShowRolesList(String value)
+    {
+        Gson gson = new Gson();
+
+        Type type = new TypeToken<List<HashMap<String, Object>>>() {
+        }.getType();
+        final    List<HashMap<String, Object>> roles = gson.fromJson(value, type);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("选择身份");
+        final RoleAdapter adapter = new RoleAdapter(this, roles, roles.get(0).get("id").toString());
+        final TinyDB tinyDB = new TinyDB(HomeActivity.this);
+        tinyDB.putString("roles", value);
+        //    设置一个下拉的列表选择项
+        adapter.notifyDataSetChanged();
+
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                User user = (User) tinyDB.getObject("user", User.class);
+                user.setRoleId(roles.get(which).get("id").toString());
+                user.setRoleName(roles.get(which).get("name").toString());
+                tinyDB.putObject("user", user);
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                User user = (User) tinyDB.getObject("user", User.class);
+                user.setRoleId(roles.get(0).get("id").toString());
+                user.setRoleName(roles.get(0).get("name").toString());
+                tinyDB.putObject("user", user);
+            }
+        });
+        builder.show();
     }
 }

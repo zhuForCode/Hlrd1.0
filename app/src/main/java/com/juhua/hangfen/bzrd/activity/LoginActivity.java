@@ -291,8 +291,9 @@ public class LoginActivity extends BaseActivity {
                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     intent.putExtra("UserCurrent", user);
                                     AppManager.getAppManager().setUser(user);
-                                    intent.putExtra("getUnReadMailCount", getUnReadMailCount());
+                                    intent.putExtra("getUnReadMailCount", getUnReadMailCount(user.getId()));
                                     intent.putExtra("getBannerList", getBannerList());
+                                    intent.putExtra("getRolesList", getRolesList(user.getId()));
                                     remember();
                                     startActivity(intent);
                                     AppManager.getAppManager().finishActivity();
@@ -367,18 +368,19 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    protected JsonMessage getUnReadMailCount(){
+    protected JsonMessage getUnReadMailCount(String userId){
         try {
             Response response = OkHttpUtils
                     .post()
                     .url(Constants.ASHX_URL)
                     .addParams("method", "GetUnReadMailCount")
-                    .addParams("userid", "3")
+                    .addParams("userid", userId)
                     .addParams("verify", Constants.VERIFY)
                     .tag(LoginActivity.this)
                     .build()
                     .execute();
-            return   GsonUtil.parseJsonWithGson(response.body().string(), JsonMessage.class);
+            String result = response.body().string();
+            return   GsonUtil.parseJsonWithGson(result, JsonMessage.class);
         }catch (Exception e){
             return  null;
         }
@@ -395,11 +397,32 @@ public class LoginActivity extends BaseActivity {
                     .tag(LoginActivity.this)
                     .build()
                     .execute();
-            return GsonUtil.parseJsonWithGson(response.body().string().replace('“','"'), JsonMessage.class);
+            String result = response.body().string();
+            return   GsonUtil.parseJsonWithGson(result, JsonMessage.class);
         }catch (Exception e){
             return  null;
         }
     }
+
+    protected JsonMessage getRolesList(String userId){
+        try {
+            Response response = OkHttpUtils
+                    .post()
+                    .url(Constants.ASHX_URL)
+                    .addParams("method", "GetRolesList")
+                    .addParams("userId", userId)
+                    .addParams("verify", Constants.VERIFY)
+                    .tag(LoginActivity.this)
+                    .build()
+                    .execute();
+            String result = response.body().string();
+            return   GsonUtil.parseJsonWithGson(result, JsonMessage.class);
+        }catch (Exception e){
+            Log.d("kuai", e.toString());
+            return  null;
+        }
+    }
+
 
     protected void checkVersion(){
         final TextView mLoadingTxt  = (TextView) progressLLayout.findViewById(R.id.txt_progress_login);

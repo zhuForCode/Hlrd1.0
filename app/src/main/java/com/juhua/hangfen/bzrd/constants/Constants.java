@@ -11,15 +11,15 @@ public interface Constants {
     String VERIFY = "+afJ7yNqhDL67Hbo7ib9HQ==";//Get请求的话，+号要替换为%2B
     int REQUEST_TIMEOUT = 18000;
 
-    String DOMAIN_NAME = "http://192.168.43.81/";
+    String DOMAIN_NAME = "http://dblz.sdbzrd.gov.cn/";
     String WEBSERVICE_URL = " /WebServers/AppSer.asmx";
     String NAME_SPACE = "http://tempuri.org/";
-    String WSDL = "http://192.168.43.81/WebServers/AppSer.asmx";
+    String WSDL = "http://dblz.sdbzrd.gov.cn/WebServers/AppSer.asmx";
     String METHOD_APP_LOGIN = "AppLoginForZjrd";
     String METHOD_GET_APP_VERSION = "GetWebAppVersion";
     String METHOD_GET_BACK_PASSWORD = "GetBackPassWord";
     int RESULT_CONTACT_CONFIRM = 10;//html5 选择联系人 activityResultCode
 
     String AES_KEY = "eCwQ/5hxmCPFwLYFoDN4zQ==:r+CMgJoJ0dJa0AoTRS5JG5Tac2yjBH17Z7rPxIF/UIY=";
-    String ASHX_URL = "http://192.168.43.81/LzptApp/Handler/AppService.ashx";
+    String ASHX_URL = "http://dblz.sdbzrd.gov.cn/LzptApp/Handler/AppService.ashx";
 }

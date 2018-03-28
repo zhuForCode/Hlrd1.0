@@ -6,6 +6,10 @@
     />
     <com.juhua.hangfen.bzrd.widget.SingleLinePreference
         android:layout="@layout/perf_right"
+        android:key="change_role"
+        />
+    <com.juhua.hangfen.bzrd.widget.SingleLinePreference
+        android:layout="@layout/perf_right"
         android:key="change_pwd"
         />
     <com.juhua.hangfen.bzrd.widget.SingleLinePreference

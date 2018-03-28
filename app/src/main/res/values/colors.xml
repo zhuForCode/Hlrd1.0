@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#dc0000</color>
     <color name="colorPrimaryDark">#dc0000</color>
-    <color name="colorAccent">#dc0000</color>
+        <color name="colorAccent">#dc0000</color>
     <drawable name="transparent">#00000000</drawable>
     <drawable name="half_transparent">#65000000</drawable>
     <color name="common_white">#ffffff</color>

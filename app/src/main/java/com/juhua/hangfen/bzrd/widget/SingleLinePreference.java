@@ -3,6 +3,7 @@ package com.juhua.hangfen.bzrd.widget;
 import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ public class SingleLinePreference extends Preference {
     private int prefIconResId;
     private String leftText;
     private String rightText;
+    private TextView leftTextview;
     public SingleLinePreference(Context context) {
         super(context);
     }
@@ -34,7 +36,7 @@ public class SingleLinePreference extends Preference {
         ImageView prefIcon = (ImageView) view.findViewById(R.id.pref_icon);
         prefIcon.setImageDrawable(view.getResources().getDrawable(prefIconResId));
 
-        TextView leftTextview = (TextView) view.findViewById(R.id.pref_title);
+        leftTextview = (TextView) view.findViewById(R.id.pref_title);
         leftTextview.setText(leftText);
 
         TextView rightTextView = (TextView) view.findViewById(R.id.pref_summary);
@@ -63,6 +65,12 @@ public class SingleLinePreference extends Preference {
     }
 
     public void setLeftText(String leftText) {
-        this.leftText = leftText;
+        if(this.leftTextview == null){
+            this.leftText = leftText;
+        }else{
+            this.leftTextview.setText(leftText);
+        }
+
     }
+
 }

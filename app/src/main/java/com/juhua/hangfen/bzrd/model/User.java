@@ -12,6 +12,8 @@ public class User implements Serializable {
     private String account;
     private String area;
     private String mobile;
+    private String roleId;
+    private String roleName;
     private String token;
 
 
@@ -61,5 +63,21 @@ public class User implements Serializable {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }
