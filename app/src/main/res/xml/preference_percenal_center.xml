@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.juhua.hangfen.bzrd.widget.SingleLinePreference
+    <com.juhua.hangfen.shaoxingrd.widget.SingleLinePreference
         android:layout="@layout/perf_right"
         android:key="username"
     />
-    <com.juhua.hangfen.bzrd.widget.SingleLinePreference
+    <com.juhua.hangfen.shaoxingrd.widget.SingleLinePreference
         android:layout="@layout/perf_right"
         android:key="change_role"
         />
-    <com.juhua.hangfen.bzrd.widget.SingleLinePreference
+    <com.juhua.hangfen.shaoxingrd.widget.SingleLinePreference
         android:layout="@layout/perf_right"
         android:key="change_pwd"
         />
-    <com.juhua.hangfen.bzrd.widget.SingleLinePreference
+    <com.juhua.hangfen.shaoxingrd.widget.SingleLinePreference
         android:layout="@layout/perf_right"
         android:key="about"
         />

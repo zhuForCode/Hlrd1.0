@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content">
-        <com.juhua.hangfen.bzrd.widget.MaterialBadgeTextView
+        <com.juhua.hangfen.shaoxingrd.widget.MaterialBadgeTextView
             android:layout_width="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="5dp"

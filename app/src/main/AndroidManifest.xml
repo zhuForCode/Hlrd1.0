@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.juhua.hangfen.bzrd">
+    package="com.juhua.hangfen.shaoxingrd">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -12,23 +12,23 @@
 
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        android:name="com.juhua.hangfen.bzrd.application.ThisApplication">
-        <activity android:name="com.juhua.hangfen.bzrd.activity.WelcomeActivity" >
+        android:name="com.juhua.hangfen.shaoxingrd.application.ThisApplication">
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.WelcomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.LoginActivity"/>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.HomeActivity" />
-        <activity android:name="com.juhua.hangfen.bzrd.activity.InfoActivity"/>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.WebActivity"/>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.AboutActivity" />
-        <activity android:name="com.juhua.hangfen.bzrd.activity.PersonActivity"/>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.ModifyPasswordActivity"/>
-        <activity android:name="com.juhua.hangfen.bzrd.activity.PublicWebViewActivity" />
-        <activity android:name="com.juhua.hangfen.bzrd.activity.QRCodeActivity" />
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.LoginActivity"/>
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.HomeActivity" />
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.InfoActivity"/>
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.WebActivity"/>
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.AboutActivity" />
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.PersonActivity"/>
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.ModifyPasswordActivity"/>
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.PublicWebViewActivity" />
+        <activity android:name="com.juhua.hangfen.shaoxingrd.activity.QRCodeActivity" />
     </application>
 
 </manifest>
